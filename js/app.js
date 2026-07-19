@@ -322,22 +322,71 @@ function parseHash() {
   return { view: "home", albumId: null };
 }
 
+function parseLyricTimeToken(token) {
+  const raw = String(token ?? "").trim();
+  if (!raw) return null;
+
+  // mm:ss or mm:ss.xx
+  if (raw.includes(":")) {
+    const [minPart, secPart] = raw.split(":");
+    const minutes = Number(minPart);
+    const seconds = Number(secPart);
+    if (!Number.isFinite(minutes) || !Number.isFinite(seconds)) return null;
+    return minutes * 60 + seconds;
+  }
+
+  const seconds = Number(raw);
+  return Number.isFinite(seconds) ? seconds : null;
+}
+
+function parseLyricLine(line) {
+  const text = String(line ?? "").trim();
+  if (!text) return null;
+
+  // [0:12.5] Lyric text   or   [12.5] Lyric text
+  const bracket = text.match(/^\[([^\]]+)\]\s*(.*)$/);
+  if (bracket) {
+    const time = parseLyricTimeToken(bracket[1]);
+    const body = bracket[2].trim();
+    if (body) return { time, text: body };
+  }
+
+  // 12.5 | Lyric text   or   0:12 | Lyric text
+  const pipe = text.match(/^([^|]+)\|\s*(.+)$/);
+  if (pipe) {
+    const time = parseLyricTimeToken(pipe[1]);
+    if (time != null) return { time, text: pipe[2].trim() };
+  }
+
+  return { time: null, text };
+}
+
 function normalizeLyrics(lyrics) {
   if (!lyrics) return [];
+
+  // CMS text field: one big multiline string
+  if (typeof lyrics === "string") {
+    return lyrics
+      .split(/\r?\n/)
+      .map(parseLyricLine)
+      .filter(Boolean);
+  }
+
   if (!Array.isArray(lyrics)) return [];
+
   return lyrics
     .map((line) => {
-      if (typeof line === "string") return { time: null, text: line };
+      if (typeof line === "string") return parseLyricLine(line);
       if (line && typeof line.text === "string") {
         const time =
           typeof line.time === "number" && Number.isFinite(line.time)
             ? line.time
             : null;
-        return { time, text: line.text };
+        return { time, text: line.text.trim() };
       }
       return null;
     })
-    .filter(Boolean);
+    .filter((line) => line && line.text);
 }
 
 function renderSidebar() {

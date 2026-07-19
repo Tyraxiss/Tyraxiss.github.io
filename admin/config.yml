@@ -44,9 +44,8 @@ collections:
                   - { label: Audio file, name: src, widget: file }
                   - label: Lyrics
                     name: lyrics
-                    widget: list
+                    widget: text
                     required: false
-                    summary: "{{text}}"
-                    fields:
-                      - { label: Time (seconds), name: time, widget: number, value_type: float, required: false, hint: "Leave empty for unsynced lines" }
-                      - { label: Line, name: text, widget: string }
+                    hint: >
+                      Paste all lyrics at once (one line per lyric line).
+                      Optional timestamps: [0:12] Hello  or  [12.5] Hello  or  12.5 | Hello

@@ -79,7 +79,7 @@ def main() -> None:
                     "title": title,
                     "duration": duration_seconds(mp3),
                     "src": "./" + mp3.as_posix(),
-                    "lyrics": [],
+                    "lyrics": "",
                 }
             )
             print(f"{folder.name}: {title} ({tracks[-1]['duration']}s)")
