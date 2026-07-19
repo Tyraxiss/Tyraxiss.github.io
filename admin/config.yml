@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+
+# Replace YOUR_GITHUB_USERNAME/MP3-Website with your real owner/repo.
+# After deploying the OAuth worker, set base_url to that worker URL (see ADMIN.md).
+backend:
+  name: github
+  repo: Tyraxiss/MP3-Website
+  branch: main
+  # base_url: https://YOUR-WORKER.workers.dev
+
+media_folder: Albums
+public_folder: ./Albums
+
+local_backend: true
+
+collections:
+  - name: catalog
+    label: Music Catalog
+    files:
+      - name: catalog
+        label: Albums & Tracks
+        file: data/catalog.json
+        fields:
+          - label: Albums
+            name: albums
+            widget: list
+            summary: "{{title}} — {{artist}}"
+            fields:
+              - { label: ID, name: id, widget: string, hint: "URL-safe slug, e.g. broken-thoughts" }
+              - { label: Title, name: title, widget: string }
+              - { label: Artist, name: artist, widget: string }
+              - { label: Year, name: year, widget: number, value_type: int, required: false }
+              - { label: Cover art, name: cover, widget: image }
+              - label: Tracks
+                name: tracks
+                widget: list
+                summary: "{{title}}"
+                fields:
+                  - { label: ID, name: id, widget: string }
+                  - { label: Title, name: title, widget: string }
+                  - { label: Duration (seconds), name: duration, widget: number, value_type: int, required: false }
+                  - { label: Audio file, name: src, widget: file }
+                  - label: Lyrics
+                    name: lyrics
+                    widget: list
+                    required: false
+                    summary: "{{text}}"
+                    fields:
+                      - { label: Time (seconds), name: time, widget: number, value_type: float, required: false, hint: "Leave empty for unsynced lines" }
+                      - { label: Line, name: text, widget: string }
