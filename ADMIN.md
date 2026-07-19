@@ -79,9 +79,13 @@ Commit and push, wait for Pages to update, then open `/admin/` and use **Login w
 
 1. Open `/admin/` and sign in
 2. **Music Catalog → Albums & Tracks**
-3. Expand album → track → **Lyrics**
-4. Add lines (`Time` in seconds optional; `Line` required)
+3. Expand album → track
+4. Add lyrics either by:
+   - **Lyrics file:** upload a premade `.lrc` or `.vtt`
+   - **Lyrics text:** paste plain / timed lyrics into the text box
 5. **Publish** — CMS commits to the repo; refresh the public site after Pages rebuilds
+
+Uploaded lyric files are stored under `Albums/lyrics/`. A lyrics file overrides the text box when both are set.
 
 ---
 

@@ -322,15 +322,24 @@ function parseHash() {
   return { view: "home", albumId: null };
 }
 
+const lyricsCache = new Map();
+
 function parseLyricTimeToken(token) {
-  const raw = String(token ?? "").trim();
+  const raw = String(token ?? "").trim().replace(",", ".");
   if (!raw) return null;
 
-  // mm:ss or mm:ss.xx
-  if (raw.includes(":")) {
-    const [minPart, secPart] = raw.split(":");
-    const minutes = Number(minPart);
-    const seconds = Number(secPart);
+  const parts = raw.split(":");
+  if (parts.length === 3) {
+    const hours = Number(parts[0]);
+    const minutes = Number(parts[1]);
+    const seconds = Number(parts[2]);
+    if (![hours, minutes, seconds].every(Number.isFinite)) return null;
+    return hours * 3600 + minutes * 60 + seconds;
+  }
+
+  if (parts.length === 2) {
+    const minutes = Number(parts[0]);
+    const seconds = Number(parts[1]);
     if (!Number.isFinite(minutes) || !Number.isFinite(seconds)) return null;
     return minutes * 60 + seconds;
   }
@@ -361,15 +370,85 @@ function parseLyricLine(line) {
   return { time: null, text };
 }
 
+function parseLrc(text) {
+  const lines = [];
+
+  for (const rawLine of String(text).split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line) continue;
+
+    // Skip metadata tags like [ti:], [ar:], [offset:]
+    if (/^\[[a-zA-Z]/.test(line)) continue;
+
+    const times = [];
+    let rest = line;
+    let match = rest.match(/^\[([^\]]+)\]/);
+    while (match) {
+      const time = parseLyricTimeToken(match[1]);
+      if (time != null) times.push(time);
+      rest = rest.slice(match[0].length).trimStart();
+      match = rest.match(/^\[([^\]]+)\]/);
+    }
+
+    const body = rest.trim();
+    if (!body) continue;
+
+    if (times.length) {
+      for (const time of times) lines.push({ time, text: body });
+    } else {
+      lines.push({ time: null, text: body });
+    }
+  }
+
+  return lines.sort((a, b) => (a.time ?? 0) - (b.time ?? 0));
+}
+
+function parseVtt(text) {
+  const cleaned = String(text)
+    .replace(/^\uFEFF/, "")
+    .replace(/^WEBVTT[^\n]*\n?/i, "");
+  const blocks = cleaned.split(/\n\s*\n/);
+  const lines = [];
+
+  for (const block of blocks) {
+    const parts = block
+      .split(/\r?\n/)
+      .map((part) => part.trim())
+      .filter(Boolean);
+    if (!parts.length || parts[0].startsWith("NOTE")) continue;
+
+    let timingIndex = 0;
+    if (parts[0] && !parts[0].includes("-->")) timingIndex = 1;
+    const timing = parts[timingIndex];
+    if (!timing || !timing.includes("-->")) continue;
+
+    const startToken = timing.split("-->")[0].trim().split(/\s+/)[0];
+    const time = parseLyricTimeToken(startToken);
+    const cueText = parts
+      .slice(timingIndex + 1)
+      .join("\n")
+      .replace(/<\/?[^>]+>/g, "")
+      .trim();
+
+    for (const cueLine of cueText.split(/\r?\n/)) {
+      const body = cueLine.trim();
+      if (body) lines.push({ time, text: body });
+    }
+  }
+
+  return lines;
+}
+
 function normalizeLyrics(lyrics) {
   if (!lyrics) return [];
 
-  // CMS text field: one big multiline string
+  // CMS text field: one big multiline string (also accepts pasted LRC)
   if (typeof lyrics === "string") {
-    return lyrics
-      .split(/\r?\n/)
-      .map(parseLyricLine)
-      .filter(Boolean);
+    const trimmed = lyrics.trim();
+    if (!trimmed) return [];
+    if (/^\s*WEBVTT/i.test(trimmed)) return parseVtt(trimmed);
+    if (/^\[\d/.test(trimmed) || trimmed.includes("\n[")) return parseLrc(trimmed);
+    return trimmed.split(/\r?\n/).map(parseLyricLine).filter(Boolean);
   }
 
   if (!Array.isArray(lyrics)) return [];
@@ -387,6 +466,35 @@ function normalizeLyrics(lyrics) {
       return null;
     })
     .filter((line) => line && line.text);
+}
+
+async function resolveTrackLyrics(track) {
+  if (!track) return [];
+
+  const cacheKey = `${track.id || ""}::${track.lyricsFile || ""}::${typeof track.lyrics === "string" ? track.lyrics.length : "arr"}`;
+  if (lyricsCache.has(cacheKey)) return lyricsCache.get(cacheKey);
+
+  let lines = [];
+
+  if (track.lyricsFile) {
+    try {
+      const res = await fetch(assetUrl(track.lyricsFile));
+      if (res.ok) {
+        const text = await res.text();
+        const name = String(track.lyricsFile).toLowerCase();
+        lines =
+          name.endsWith(".vtt") || /^\s*WEBVTT/i.test(text)
+            ? parseVtt(text)
+            : parseLrc(text);
+      }
+    } catch {
+      // Fall back to pasted lyrics text.
+    }
+  }
+
+  if (!lines.length) lines = normalizeLyrics(track.lyrics);
+  lyricsCache.set(cacheKey, lines);
+  return lines;
 }
 
 function renderSidebar() {
@@ -650,7 +758,7 @@ function cycleRepeat() {
         : "Repeat one";
 }
 
-function renderLyrics() {
+async function renderLyrics() {
   const current = getCurrentTrack();
   if (!current) {
     els.lyricsSub.textContent = "";
@@ -659,7 +767,12 @@ function renderLyrics() {
   }
 
   els.lyricsSub.textContent = `${current.track.title} · ${current.album.title}`;
-  const lines = normalizeLyrics(current.track.lyrics);
+  els.lyricsLines.innerHTML = `<p class="lyric-empty">Loading lyrics…</p>`;
+
+  const lines = await resolveTrackLyrics(current.track);
+  // Track may have changed while fetching.
+  const stillCurrent = getCurrentTrack();
+  if (!stillCurrent || stillCurrent.track.id !== current.track.id) return;
 
   if (!lines.length) {
     els.lyricsLines.innerHTML = `<p class="lyric-empty">No lyrics for this track yet.</p>`;
@@ -672,6 +785,7 @@ function renderLyrics() {
         `<p class="lyric-line" data-lyric-index="${i}" data-time="${line.time ?? ""}">${escapeHtml(line.text)}</p>`
     )
     .join("");
+  updateLyricsHighlight(audio.currentTime || 0);
 }
 
 function updateLyricsHighlight(currentTime) {

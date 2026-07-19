@@ -42,10 +42,18 @@ collections:
                   - { label: Title, name: title, widget: string }
                   - { label: Duration (seconds), name: duration, widget: number, value_type: int, required: false }
                   - { label: Audio file, name: src, widget: file }
-                  - label: Lyrics
+                  - label: Lyrics file (.lrc / .vtt)
+                    name: lyricsFile
+                    widget: file
+                    required: false
+                    media_folder: Albums/lyrics
+                    public_folder: /MP3-Website/Albums/lyrics
+                    hint: Upload a premade .lrc or .vtt file. Takes priority over the text box below.
+                  - label: Lyrics text
                     name: lyrics
                     widget: text
                     required: false
                     hint: >
-                      Paste all lyrics at once (one line per lyric line).
-                      Optional timestamps: [0:12] Hello  or  [12.5] Hello  or  12.5 | Hello
+                      Or paste lyrics here (one line per lyric line).
+                      Optional timestamps: [0:12] Hello  or  [12.5] Hello  or  12.5 | Hello.
+                      Ignored when a lyrics file is set.
