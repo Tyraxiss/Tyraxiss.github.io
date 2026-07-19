@@ -18,6 +18,7 @@
       "title": "Heavy Hollow Ache",
       "duration": 244,
       "src": "./Albums/The Last Of Me/Brian Smith - Heavy Hollow Ache.mp3",
+      "lyricsFile": "/Albums/lyrics/Brian Smith - Heavy Hollow Ache.lrc",
       "lyrics": ""
     },
     {
@@ -53,6 +54,7 @@
       "title": "The Shame Within",
       "duration": 294,
       "src": "./Albums/The Last Of Me/Brian Smith - The Shame Within.mp3",
+      "lyricsFile": "/Albums/lyrics/Brian Smith - The Shame Within.vtt",
       "lyrics": ""
     },
     {
