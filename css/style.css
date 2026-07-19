@@ -746,13 +746,67 @@ input[type="range"]::-moz-range-thumb {
   font-size: clamp(1.15rem, 2.2vw, 1.55rem);
   line-height: 1.35;
   color: color-mix(in srgb, var(--ink) 55%, transparent);
-  transition: color 180ms var(--ease), transform 180ms var(--ease);
+  transition:
+    color 220ms var(--ease),
+    transform 280ms var(--ease),
+    opacity 220ms var(--ease),
+    font-size 280ms var(--ease);
 }
 
 .lyric-line.is-active {
   color: var(--ink);
   transform: translateX(3px);
   font-weight: 500;
+}
+
+/* Karaoke mode: centered spotlight + progress wipe on the active line */
+.lyrics-panel.is-karaoke .lyrics-lines {
+  padding: min(38%, 10rem) 1.1rem;
+  gap: 1.05rem;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 12%,
+    #000 88%,
+    transparent 100%
+  );
+}
+
+.lyrics-panel.is-karaoke .lyric-line {
+  text-align: center;
+  transform: scale(0.92);
+  opacity: 0.34;
+  color: var(--ink-soft);
+}
+
+.lyrics-panel.is-karaoke .lyric-line.is-past {
+  opacity: 0.22;
+}
+
+.lyrics-panel.is-karaoke .lyric-line.is-upcoming {
+  opacity: 0.38;
+}
+
+.lyrics-panel.is-karaoke .lyric-line.is-active {
+  opacity: 1;
+  transform: scale(1.06);
+  font-size: clamp(1.35rem, 2.8vw, 1.95rem);
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.lyrics-panel.is-karaoke .lyric-line.is-active .lyric-text {
+  background-image: linear-gradient(
+    90deg,
+    var(--accent) 0,
+    var(--accent) var(--lyric-progress, 0%),
+    color-mix(in srgb, var(--ink) 42%, transparent) var(--lyric-progress, 0%)
+  );
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .lyric-empty,
