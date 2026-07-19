@@ -2,17 +2,17 @@
 
 backend:
   name: github
-  repo: Tyraxiss/MP3-Website
+  repo: Tyraxiss/Tyraxiss.github.io
   branch: main
   # base_url: https://YOUR-WORKER.workers.dev
 
-site_url: https://tyraxiss.github.io/MP3-Website
-display_url: https://tyraxiss.github.io/MP3-Website
-logo_url: https://tyraxiss.github.io/MP3-Website/Albums/Broken%20Thoughts/Album.png
+site_url: https://tyraxiss.github.io
+display_url: https://tyraxiss.github.io
+logo_url: https://tyraxiss.github.io/Albums/Broken%20Thoughts/Album.png
 
 # Paths in the repo vs URLs written into content
 media_folder: Albums
-public_folder: /MP3-Website/Albums
+public_folder: /Albums
 
 local_backend: true
 
@@ -90,7 +90,7 @@ collections:
             required: false
             choose_url: false
             media_folder: Albums/lyrics
-            public_folder: /MP3-Website/Albums/lyrics
+            public_folder: /Albums/lyrics
             hint: Upload a premade .lrc or .vtt. This overrides Lyrics text when set.
           - label: Lyrics text
             name: lyrics

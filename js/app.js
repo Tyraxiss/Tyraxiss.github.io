@@ -851,7 +851,7 @@ function assetUrl(path) {
   if (/^https?:\/\//i.test(path)) return path;
 
   let normalized = String(path).replace(/\\/g, "/");
-  // CMS may store absolute Paths like /MP3-Website/Albums/... — normalize to site-relative.
+  // CMS may store absolute paths like /Albums/... (or legacy /MP3-Website/Albums/...).
   normalized = normalized.replace(/^\/MP3-Website\//i, "");
   normalized = normalized.replace(/^\.\//, "");
   normalized = normalized.replace(/^\//, "");

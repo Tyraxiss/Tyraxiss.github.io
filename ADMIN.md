@@ -3,8 +3,8 @@
 The public player reads [`data/catalog.json`](data/catalog.json).  
 Day-to-day editing is done in the browser at **`/admin/`**.
 
-**Your live admin URL:**  
-https://tyraxiss.github.io/MP3-Website/admin/
+**Your live site:** https://tyraxiss.github.io/  
+**Your live admin URL:** https://tyraxiss.github.io/admin/
 
 ---
 
@@ -12,15 +12,15 @@ https://tyraxiss.github.io/MP3-Website/admin/
 
 This is the simplest option when only you edit the library. No Cloudflare or OAuth app required.
 
-1. Open https://tyraxiss.github.io/MP3-Website/admin/
+1. Open https://tyraxiss.github.io/admin/
 2. Click **Sign In with Token** (wording may be similar)
 3. Use the link in the dialog to create a GitHub **Personal Access Token**
    - Prefer a **fine-grained** token if offered
-   - Resource access: only the **Tyraxiss/MP3-Website** repo
+   - Resource access: only the **Tyraxiss/Tyraxiss.github.io** repo
    - Permissions: **Contents** read/write (and metadata read)
    - Or classic token with `repo` scope if that’s what the dialog links to
 4. Generate the token, copy it, paste it into the CMS prompt
-5. You’re in — open **Music Catalog → Albums & Tracks**, edit lyrics/tracks, then **Publish**
+5. You’re in — open **Albums**, edit one album at a time, then **Publish**
 
 The token is stored in your browser’s local storage. If login stops working later, create a new token and sign in again.
 
@@ -41,8 +41,8 @@ Only needed if you want a normal GitHub login button instead of pasting a token.
 
 1. Open https://github.com/settings/applications/new
 2. Fill in:
-   - **Application name:** `MP3-Website CMS` (any name)
-   - **Homepage URL:** `https://tyraxiss.github.io/MP3-Website/`
+   - **Application name:** `Brian J. Smith CMS` (any name)
+   - **Homepage URL:** `https://tyraxiss.github.io/`
    - **Authorization callback URL:** `https://YOUR-WORKER.workers.dev/callback`
 3. Register, then **Generate a new client secret**
 4. Copy the **Client ID** and **Client Secret**
@@ -66,7 +66,7 @@ In [`admin/config.yml`](admin/config.yml):
 ```yaml
 backend:
   name: github
-  repo: Tyraxiss/MP3-Website
+  repo: Tyraxiss/Tyraxiss.github.io
   branch: main
   base_url: https://YOUR-WORKER.workers.dev
 ```
@@ -102,6 +102,7 @@ You can also drop files into `Albums/` and run:
 
 ```bash
 python scripts/build_catalog.py
+python scripts/sync_catalog.py sync
 ```
 
 Keep individual MP3s under **100 MB**. Git **LFS does not work** with GitHub Pages.
