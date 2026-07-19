@@ -266,6 +266,7 @@
       "id": "the-last-of-me",
       "title": "The Last Of Me",
       "artist": "Brian J. Smith",
+      "year": null,
       "cover": "./Albums/The Last Of Me/The Last Of Me.png",
       "tracks": [
         {
@@ -273,6 +274,7 @@
           "title": "Alive in the Static",
           "duration": 305,
           "src": "./Albums/The Last Of Me/Brian Smith - Alive in the Static.mp3",
+          "lyricsFile": "Albums/lyrics/Brian Smith - Alive in the Static.lrc",
           "lyrics": ""
         },
         {
