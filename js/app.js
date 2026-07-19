@@ -475,25 +475,39 @@ async function resolveTrackLyrics(track) {
   if (lyricsCache.has(cacheKey)) return lyricsCache.get(cacheKey);
 
   let lines = [];
+  let fileError = null;
 
   if (track.lyricsFile) {
     try {
-      const res = await fetch(assetUrl(track.lyricsFile));
-      if (res.ok) {
+      const url = assetUrl(track.lyricsFile);
+      const res = await fetch(url, { cache: "no-cache" });
+      if (!res.ok) {
+        fileError = `Could not load lyrics file (${res.status})`;
+      } else {
         const text = await res.text();
         const name = String(track.lyricsFile).toLowerCase();
         lines =
           name.endsWith(".vtt") || /^\s*WEBVTT/i.test(text)
             ? parseVtt(text)
             : parseLrc(text);
+        if (!lines.length) {
+          fileError = "Lyrics file loaded, but no lines were found";
+        }
       }
-    } catch {
-      // Fall back to pasted lyrics text.
+    } catch (error) {
+      fileError = "Could not load lyrics file";
+      console.warn(fileError, track.lyricsFile, error);
     }
   }
 
   if (!lines.length) lines = normalizeLyrics(track.lyrics);
-  lyricsCache.set(cacheKey, lines);
+
+  // Only cache successful lyric loads (avoid sticky empty cache after a failed fetch).
+  if (lines.length) lyricsCache.set(cacheKey, lines);
+
+  if (!lines.length && fileError) {
+    return [{ time: null, text: fileError }];
+  }
   return lines;
 }
 
@@ -775,7 +789,10 @@ async function renderLyrics() {
   if (!stillCurrent || stillCurrent.track.id !== current.track.id) return;
 
   if (!lines.length) {
-    els.lyricsLines.innerHTML = `<p class="lyric-empty">No lyrics for this track yet.</p>`;
+    const hint = current.track.lyricsFile
+      ? `No lyrics found for this track (file: ${current.track.lyricsFile}).`
+      : "No lyrics for this track yet.";
+    els.lyricsLines.innerHTML = `<p class="lyric-empty">${escapeHtml(hint)}</p>`;
     return;
   }
 
@@ -971,10 +988,11 @@ async function init() {
   bindEvents();
 
   try {
-    const res = await fetch(CATALOG_URL);
+    const res = await fetch(`${CATALOG_URL}?v=${Date.now()}`, { cache: "no-store" });
     if (!res.ok) throw new Error(`Failed to load catalog (${res.status})`);
     const data = await res.json();
     state.albums = Array.isArray(data.albums) ? data.albums : [];
+    lyricsCache.clear();
   } catch (error) {
     els.viewRoot.innerHTML = `
       <h1 class="view-title">Couldn’t load library</h1>
