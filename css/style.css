@@ -715,6 +715,17 @@ input[type="range"]::-moz-range-thumb {
   flex-shrink: 0;
 }
 
+.lyrics-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+#btn-karaoke[aria-pressed="true"] {
+  color: var(--accent);
+}
+
 .lyrics-heading {
   margin: 0;
   font-family: var(--font-display);

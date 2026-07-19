@@ -1,5 +1,6 @@
 const CATALOG_URL = "./data/catalog.json";
 const THEME_KEY = "bs-theme";
+const KARAOKE_KEY = "bs-karaoke";
 
 const state = {
   albums: [],
@@ -11,6 +12,8 @@ const state = {
   seeking: false,
   playToken: 0,
   activeLyricIndex: -1,
+  karaokeEnabled: true,
+  lyricsAreTimed: false,
 };
 
 function getTheme() {
@@ -285,7 +288,54 @@ const els = {
   lyricsHeading: document.getElementById("lyrics-heading"),
   lyricsSub: document.getElementById("lyrics-sub"),
   lyricsLines: document.getElementById("lyrics-lines"),
+  btnKaraoke: document.getElementById("btn-karaoke"),
 };
+
+function loadKaraokePreference() {
+  try {
+    const saved = localStorage.getItem(KARAOKE_KEY);
+    if (saved === "off") state.karaokeEnabled = false;
+    else if (saved === "on") state.karaokeEnabled = true;
+  } catch {
+    // keep default
+  }
+}
+
+function saveKaraokePreference() {
+  try {
+    localStorage.setItem(KARAOKE_KEY, state.karaokeEnabled ? "on" : "off");
+  } catch {
+    // ignore
+  }
+}
+
+function syncKaraokeButton() {
+  if (!els.btnKaraoke) return;
+  const show = state.lyricsAreTimed;
+  els.btnKaraoke.hidden = !show;
+  els.btnKaraoke.setAttribute("aria-pressed", String(state.karaokeEnabled));
+  els.btnKaraoke.title = state.karaokeEnabled
+    ? "Turn off karaoke style"
+    : "Turn on karaoke style";
+}
+
+function applyKaraokeMode() {
+  const on = state.lyricsAreTimed && state.karaokeEnabled;
+  els.lyricsPanel.classList.toggle("is-karaoke", on);
+  if (els.lyricsHeading) {
+    els.lyricsHeading.textContent = on ? "Karaoke" : "Lyrics";
+  }
+  syncKaraokeButton();
+}
+
+function toggleKaraokeMode() {
+  if (!state.lyricsAreTimed) return;
+  state.karaokeEnabled = !state.karaokeEnabled;
+  saveKaraokePreference();
+  applyKaraokeMode();
+  state.activeLyricIndex = -1;
+  updateLyricsHighlight(audio.currentTime || 0);
+}
 
 function formatTime(seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
@@ -805,8 +855,8 @@ function cycleRepeat() {
 async function renderLyrics() {
   const current = getCurrentTrack();
   if (!current) {
-    els.lyricsPanel.classList.remove("is-karaoke");
-    if (els.lyricsHeading) els.lyricsHeading.textContent = "Lyrics";
+    state.lyricsAreTimed = false;
+    applyKaraokeMode();
     els.lyricsSub.textContent = "";
     els.lyricsLines.innerHTML = `<p class="lyric-empty">Nothing playing</p>`;
     return;
@@ -824,7 +874,8 @@ async function renderLyrics() {
   if (currentTrackKey() !== requestKey) return;
 
   if (!lines.length) {
-    els.lyricsPanel.classList.remove("is-karaoke");
+    state.lyricsAreTimed = false;
+    applyKaraokeMode();
     const hint = current.track.lyricsFile
       ? `No lyrics found for this track (file: ${current.track.lyricsFile}).`
       : "No lyrics for this track yet.";
@@ -832,11 +883,10 @@ async function renderLyrics() {
     return;
   }
 
-  const timed = lines.some(
+  state.lyricsAreTimed = lines.some(
     (line) => typeof line.time === "number" && Number.isFinite(line.time)
   );
-  els.lyricsPanel.classList.toggle("is-karaoke", timed);
-  els.lyricsHeading.textContent = timed ? "Karaoke" : "Lyrics";
+  applyKaraokeMode();
 
   state.activeLyricIndex = -1;
   els.lyricsLines.innerHTML = lines
@@ -860,7 +910,8 @@ function updateLyricsHighlight(currentTime) {
 
   const hasTimestamps = times.some((t) => typeof t === "number" && Number.isFinite(t));
   if (!hasTimestamps) {
-    els.lyricsPanel.classList.remove("is-karaoke");
+    state.lyricsAreTimed = false;
+    applyKaraokeMode();
     return;
   }
 
@@ -872,6 +923,7 @@ function updateLyricsHighlight(currentTime) {
 
   const changed = active !== state.activeLyricIndex;
   state.activeLyricIndex = active;
+  const karaokeOn = state.karaokeEnabled;
 
   const start = times[active] ?? currentTime;
   let end = times[active + 1];
@@ -883,9 +935,9 @@ function updateLyricsHighlight(currentTime) {
 
   nodes.forEach((node, i) => {
     node.classList.toggle("is-active", i === active);
-    node.classList.toggle("is-past", i < active);
-    node.classList.toggle("is-upcoming", i > active);
-    if (i === active) {
+    node.classList.toggle("is-past", karaokeOn && i < active);
+    node.classList.toggle("is-upcoming", karaokeOn && i > active);
+    if (karaokeOn && i === active) {
       node.style.setProperty("--lyric-progress", progressPct);
     } else {
       node.style.removeProperty("--lyric-progress");
@@ -893,7 +945,10 @@ function updateLyricsHighlight(currentTime) {
   });
 
   if (changed && nodes[active]) {
-    nodes[active].scrollIntoView({ block: "center", behavior: "smooth" });
+    nodes[active].scrollIntoView({
+      block: karaokeOn ? "center" : "nearest",
+      behavior: "smooth",
+    });
   }
 }
 
@@ -913,6 +968,7 @@ function closeLyrics() {
   els.btnLyrics.setAttribute("aria-pressed", "false");
   state.activeLyricIndex = -1;
   if (els.lyricsHeading) els.lyricsHeading.textContent = "Lyrics";
+  if (els.btnKaraoke) els.btnKaraoke.hidden = true;
 }
 
 function toggleLyrics() {
@@ -1017,6 +1073,9 @@ function bindEvents() {
   els.btnShuffle.addEventListener("click", toggleShuffle);
   els.btnRepeat.addEventListener("click", cycleRepeat);
   els.btnLyrics.addEventListener("click", toggleLyrics);
+  if (els.btnKaraoke) {
+    els.btnKaraoke.addEventListener("click", toggleKaraokeMode);
+  }
 
   els.lyricsPanel.addEventListener("click", (event) => {
     if (event.target.closest("[data-close-lyrics]")) closeLyrics();
@@ -1074,6 +1133,7 @@ function bindEvents() {
 }
 
 async function init() {
+  loadKaraokePreference();
   setTheme(getTheme());
   bindEvents();
 

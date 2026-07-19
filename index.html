@@ -84,7 +84,19 @@
               <p id="lyrics-heading" class="lyrics-heading">Lyrics</p>
               <p id="lyrics-sub" class="lyrics-sub"></p>
             </div>
-            <button type="button" class="ctrl ctrl-text" data-close-lyrics>Close</button>
+            <div class="lyrics-actions">
+              <button
+                type="button"
+                class="ctrl ctrl-text"
+                id="btn-karaoke"
+                title="Toggle karaoke style"
+                aria-pressed="true"
+                hidden
+              >
+                Karaoke
+              </button>
+              <button type="button" class="ctrl ctrl-text" data-close-lyrics>Close</button>
+            </div>
           </div>
           <div id="lyrics-lines" class="lyrics-lines"></div>
         </aside>
