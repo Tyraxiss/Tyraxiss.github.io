@@ -3,7 +3,9 @@ import re
 import subprocess
 from pathlib import Path
 
-root = Path("Albums")
+ROOT = Path(__file__).resolve().parents[1]
+ALBUMS_ROOT = ROOT / "Albums"
+SKIP_DIRS = {"lyrics"}
 artist = "Brian J. Smith"
 
 
@@ -53,22 +55,33 @@ def pick_cover(folder: Path) -> str | None:
     for name in preferred:
         p = folder / name
         if p.exists():
-            return "./" + p.as_posix()
+            return "./" + p.relative_to(ROOT).as_posix()
     for p in sorted(folder.iterdir()):
         if p.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp"}:
-            return "./" + p.as_posix()
+            return "./" + p.relative_to(ROOT).as_posix()
     return None
 
 
 def main() -> None:
     albums = []
-    folders = sorted([p for p in root.iterdir() if p.is_dir()], key=lambda p: p.name.lower())
+    folders = sorted(
+        [
+            p
+            for p in ALBUMS_ROOT.iterdir()
+            if p.is_dir() and p.name.lower() not in SKIP_DIRS
+        ],
+        key=lambda p: p.name.lower(),
+    )
     for folder in folders:
-        cover = pick_cover(folder)
         mp3s = sorted(
             [p for p in folder.iterdir() if p.suffix.lower() == ".mp3"],
             key=lambda p: p.name.lower(),
         )
+        if not mp3s:
+            print(f"Skipping {folder.name}: no mp3 files")
+            continue
+
+        cover = pick_cover(folder)
         album_id = slugify(folder.name)
         tracks = []
         for i, mp3 in enumerate(mp3s, start=1):
@@ -78,7 +91,7 @@ def main() -> None:
                     "id": f"{album_id}-{i:02d}",
                     "title": title,
                     "duration": duration_seconds(mp3),
-                    "src": "./" + mp3.as_posix(),
+                    "src": "./" + mp3.relative_to(ROOT).as_posix(),
                     "lyrics": "",
                 }
             )
@@ -93,8 +106,9 @@ def main() -> None:
         }
         albums.append(album)
 
-    Path("data").mkdir(exist_ok=True)
-    Path("data/catalog.json").write_text(
+    out = ROOT / "data" / "catalog.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(
         json.dumps({"albums": albums}, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )

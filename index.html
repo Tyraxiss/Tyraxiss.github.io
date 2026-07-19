@@ -67,9 +67,28 @@
         </div>
       </header>
 
-      <main class="main-panel" id="main-view" tabindex="-1">
-        <div id="view-root"></div>
-      </main>
+      <div class="content-row">
+        <main class="main-panel" id="main-view" tabindex="-1">
+          <div id="view-root"></div>
+        </main>
+
+        <aside
+          id="lyrics-panel"
+          class="lyrics-panel"
+          hidden
+          aria-label="Lyrics"
+          aria-labelledby="lyrics-heading"
+        >
+          <div class="lyrics-top">
+            <div>
+              <p id="lyrics-heading" class="lyrics-heading">Lyrics</p>
+              <p id="lyrics-sub" class="lyrics-sub"></p>
+            </div>
+            <button type="button" class="ctrl ctrl-text" data-close-lyrics>Close</button>
+          </div>
+          <div id="lyrics-lines" class="lyrics-lines"></div>
+        </aside>
+      </div>
 
       <footer class="player-bar" aria-label="Now playing">
         <div class="player-track">
@@ -148,20 +167,6 @@
           </div>
         </div>
       </footer>
-    </div>
-
-    <div id="lyrics-panel" class="lyrics-panel" hidden>
-      <div class="lyrics-backdrop" data-close-lyrics></div>
-      <div class="lyrics-sheet" role="dialog" aria-modal="true" aria-labelledby="lyrics-heading">
-        <div class="lyrics-top">
-          <div>
-            <p id="lyrics-heading" class="lyrics-heading">Lyrics</p>
-            <p id="lyrics-sub" class="lyrics-sub"></p>
-          </div>
-          <button type="button" class="ctrl ctrl-text" data-close-lyrics>Close</button>
-        </div>
-        <div id="lyrics-lines" class="lyrics-lines"></div>
-      </div>
     </div>
 
     <script src="./js/app.js" type="module"></script>

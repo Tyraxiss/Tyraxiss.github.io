@@ -127,6 +127,23 @@ a {
   margin: 0 auto;
   padding: 1.1rem 1.25rem 0;
   gap: 0.85rem;
+  transition: max-width 320ms var(--ease);
+}
+
+.app-shell.lyrics-open {
+  max-width: min(1600px, 100%);
+}
+
+.content-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 0;
+  gap: 0.85rem;
+  transition: grid-template-columns 320ms var(--ease);
+}
+
+.app-shell.lyrics-open .content-row {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 36%);
 }
 
 .topbar {
@@ -253,6 +270,7 @@ html[data-theme="dark"] .theme-toggle .icon-sun {
 }
 
 .main-panel {
+  min-width: 0;
   min-height: 0;
   overflow: auto;
   outline: none;
@@ -671,37 +689,20 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .lyrics-panel[hidden] {
-  display: none;
+  display: none !important;
 }
 
 .lyrics-panel {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-}
-
-.lyrics-backdrop {
-  position: absolute;
-  inset: 0;
-  background: var(--backdrop);
-  backdrop-filter: blur(3px);
-  animation: fade-in 200ms var(--ease);
-}
-
-.lyrics-sheet {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: min(680px, 100%);
-  height: min(74vh, 760px);
-  border-radius: 22px 22px 0 0;
-  background: var(--lyrics-bg);
-  border: 1px solid var(--player-border);
-  box-shadow: var(--shadow-strong);
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  animation: sheet-up 300ms var(--ease);
+  border-radius: calc(var(--radius) + 4px);
+  background: var(--paper-strong);
+  border: 1px solid var(--paper-border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  animation: rise-in 320ms var(--ease);
+  overflow: hidden;
 }
 
 .lyrics-top {
@@ -709,13 +710,15 @@ input[type="range"]::-moz-range-thumb {
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-  padding: 1.2rem 1.35rem 0.7rem;
+  padding: 1.1rem 1.15rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
 }
 
 .lyrics-heading {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.45rem;
 }
 
 .lyrics-sub {
@@ -726,19 +729,22 @@ input[type="range"]::-moz-range-thumb {
 
 .lyrics-lines {
   flex: 1;
+  min-height: 0;
   overflow: auto;
-  padding: 1rem 1.6rem 2.4rem;
+  padding: 1.15rem 1.25rem 1.75rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 0.95rem;
+  justify-content: flex-start;
+  gap: 0.85rem;
+  scroll-padding-top: 1.25rem;
+  scroll-padding-bottom: 1.25rem;
 }
 
 .lyric-line {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(1.3rem, 3.2vw, 1.9rem);
-  line-height: 1.3;
+  font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+  line-height: 1.35;
   color: color-mix(in srgb, var(--ink) 55%, transparent);
   transition: color 180ms var(--ease), transform 180ms var(--ease);
 }
@@ -873,5 +879,10 @@ input[type="range"]::-moz-range-thumb {
 
   .album-hero-art {
     width: min(240px, 70vw);
+  }
+
+  .app-shell.lyrics-open .content-row {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) minmax(220px, 42%);
   }
 }

@@ -98,10 +98,17 @@ npx --yes serve .
 
 Then open the printed URL (not a raw `file://` path).
 
-You can also drop files into `Albums/` and run:
+You can also drop album folders into `Albums/` (not `Albums/lyrics/`) and rebuild:
 
 ```bash
+# Scan disk folders → data/albums/*.json AND data/catalog.json
 python scripts/build_catalog.py
+python scripts/sync_catalog.py split
+```
+
+Or if you only edited `data/albums/*.json`:
+
+```bash
 python scripts/sync_catalog.py sync
 ```
 
