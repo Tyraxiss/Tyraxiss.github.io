@@ -1,0 +1,36 @@
+{
+  "id": "misc-song",
+  "title": "Misc. Song",
+  "artist": "Brian J. Smith",
+  "cover": "./Albums/Misc. Song/cover.jpg",
+  "tracks": [
+    {
+      "id": "misc-song-01",
+      "title": "Electric Night Run",
+      "duration": 243,
+      "src": "./Albums/Misc. Song/Brian Smith - Electric Night Run.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "misc-song-02",
+      "title": "Love Afterlife",
+      "duration": 208,
+      "src": "./Albums/Misc. Song/Brian Smith - Love Afterlife.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "misc-song-03",
+      "title": "Neon Pulse Rising",
+      "duration": 253,
+      "src": "./Albums/Misc. Song/Brian Smith - Neon Pulse Rising.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "misc-song-04",
+      "title": "Runaway (Techno)",
+      "duration": 204,
+      "src": "./Albums/Misc. Song/Brian Smith - Runaway (Techno).mp3",
+      "lyrics": ""
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+name: Sync catalog from albums
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/albums/**"
+      - "scripts/sync_catalog.py"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Rebuild catalog.json
+        run: python scripts/sync_catalog.py sync
+
+      - name: Commit catalog if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Sync catalog.json from album files"
+          file_pattern: data/catalog.json
+          commit_user_name: github-actions[bot]
+          commit_user_email: github-actions[bot]@users.noreply.github.com

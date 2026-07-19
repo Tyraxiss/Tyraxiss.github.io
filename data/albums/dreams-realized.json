@@ -1,0 +1,141 @@
+{
+  "id": "dreams-realized",
+  "title": "Dreams Realized",
+  "artist": "Brian J. Smith",
+  "cover": "./Albums/Dreams Realized/Album.png",
+  "tracks": [
+    {
+      "id": "dreams-realized-01",
+      "title": "Autumn Leaves",
+      "duration": 209,
+      "src": "./Albums/Dreams Realized/Brian Smith - Autumn Leaves.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-02",
+      "title": "Billionaire's Bane",
+      "duration": 254,
+      "src": "./Albums/Dreams Realized/Brian Smith - Billionaire's Bane.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-03",
+      "title": "Day's Remembered",
+      "duration": 204,
+      "src": "./Albums/Dreams Realized/Brian Smith - Day's Remembered.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-04",
+      "title": "Dreams",
+      "duration": 297,
+      "src": "./Albums/Dreams Realized/Brian Smith - Dreams.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-05",
+      "title": "Empty Hands",
+      "duration": 248,
+      "src": "./Albums/Dreams Realized/Brian Smith - Empty Hands.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-06",
+      "title": "Fallen & Broken",
+      "duration": 332,
+      "src": "./Albums/Dreams Realized/Brian Smith - Fallen & Broken.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-07",
+      "title": "It Seems (I Dream)",
+      "duration": 334,
+      "src": "./Albums/Dreams Realized/Brian Smith - It Seems (I Dream).mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-08",
+      "title": "Lost Love",
+      "duration": 205,
+      "src": "./Albums/Dreams Realized/Brian Smith - Lost Love.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-09",
+      "title": "Metal Minded Man",
+      "duration": 266,
+      "src": "./Albums/Dreams Realized/Brian Smith - Metal Minded Man.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-10",
+      "title": "Metal Minded Woman",
+      "duration": 278,
+      "src": "./Albums/Dreams Realized/Brian Smith - Metal Minded Woman.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-11",
+      "title": "Of Sorrow",
+      "duration": 205,
+      "src": "./Albums/Dreams Realized/Brian Smith - Of Sorrow.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-12",
+      "title": "Ravens Wings",
+      "duration": 287,
+      "src": "./Albums/Dreams Realized/Brian Smith - Ravens Wings.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-13",
+      "title": "Runaway",
+      "duration": 202,
+      "src": "./Albums/Dreams Realized/Brian Smith - Runaway.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-14",
+      "title": "Sad Is",
+      "duration": 182,
+      "src": "./Albums/Dreams Realized/Brian Smith - Sad Is.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-15",
+      "title": "Seen",
+      "duration": 277,
+      "src": "./Albums/Dreams Realized/Brian Smith - Seen.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-16",
+      "title": "Shattered Soul",
+      "duration": 308,
+      "src": "./Albums/Dreams Realized/Brian Smith - Shattered Soul.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-17",
+      "title": "She's So Divine",
+      "duration": 196,
+      "src": "./Albums/Dreams Realized/Brian Smith - She's So Divine.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-18",
+      "title": "This Ground Holds",
+      "duration": 264,
+      "src": "./Albums/Dreams Realized/Brian Smith - This Ground Holds.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "dreams-realized-19",
+      "title": "Together",
+      "duration": 239,
+      "src": "./Albums/Dreams Realized/Brian Smith - Together.mp3",
+      "lyrics": ""
+    }
+  ]
+}

@@ -78,12 +78,13 @@ Commit and push, wait for Pages to update, then open `/admin/` and use **Login w
 ## Adding lyrics / songs after login
 
 1. Open `/admin/` and sign in
-2. **Music Catalog → Albums & Tracks**
-3. Expand album → track
+2. Open **Albums** and click **one album** (each album is its own entry)
+3. Expand a track
 4. Add lyrics either by:
    - **Lyrics file:** upload a premade `.lrc` or `.vtt`
    - **Lyrics text:** paste plain / timed lyrics into the text box
-5. **Publish** — CMS commits to the repo; refresh the public site after Pages rebuilds
+5. **Publish** — CMS saves that album file; a GitHub Action rebuilds `data/catalog.json` for the public player
+6. Wait a minute for Pages, then refresh the public site
 
 Uploaded lyric files are stored under `Albums/lyrics/`. A lyrics file overrides the text box when both are set.
 

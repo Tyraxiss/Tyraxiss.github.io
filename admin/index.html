@@ -4,9 +4,182 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
-    <title>Library Admin · My Music</title>
+    <title>Library Admin · Brian J. Smith</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #182028;
+        --muted: #5c6a75;
+        --line: rgba(24, 32, 40, 0.12);
+        --accent: #0f5f63;
+        --paper: rgba(255, 255, 255, 0.72);
+        --font-display: "Instrument Serif", Georgia, serif;
+        --font-body: "Manrope", system-ui, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: var(--font-body);
+        color: var(--ink);
+        background:
+          radial-gradient(900px 520px at 8% 0%, rgba(176, 206, 214, 0.75), transparent 60%),
+          radial-gradient(800px 480px at 92% 8%, rgba(214, 198, 184, 0.45), transparent 55%),
+          linear-gradient(165deg, #e8eef2 0%, #f3f1ec 48%, #e4ebe8 100%);
+      }
+
+      .admin-chrome {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 1.25rem 1.25rem 0.5rem;
+      }
+
+      .admin-top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 1rem;
+      }
+
+      .brand-name {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 4vw, 2.8rem);
+        font-weight: 400;
+        letter-spacing: -0.03em;
+        line-height: 1;
+      }
+
+      .brand-sub {
+        margin: 0.35rem 0 0;
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .admin-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .admin-links a {
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 0.86rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .admin-links a:hover {
+        text-decoration: underline;
+      }
+
+      .help-card {
+        background: var(--paper);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 16px;
+        padding: 1rem 1.15rem 1.1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 14px 34px rgba(40, 55, 70, 0.08);
+        backdrop-filter: blur(10px);
+      }
+
+      .help-card h2 {
+        margin: 0 0 0.55rem;
+        font-family: var(--font-display);
+        font-size: 1.35rem;
+        font-weight: 400;
+      }
+
+      .help-card ol {
+        margin: 0;
+        padding-left: 1.2rem;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .help-card li + li {
+        margin-top: 0.35rem;
+      }
+
+      .help-card strong {
+        color: var(--ink);
+        font-weight: 700;
+      }
+
+      .help-card details {
+        margin-top: 0.75rem;
+      }
+
+      .help-card summary {
+        cursor: pointer;
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+
+      .help-card .tip {
+        margin: 0.55rem 0 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.5;
+      }
+
+      /* Let Sveltia fill the page comfortably under the chrome */
+      body > div:not(.admin-chrome) {
+        min-height: 70vh;
+      }
+    </style>
   </head>
   <body>
+    <div class="admin-chrome">
+      <header class="admin-top">
+        <div>
+          <p class="brand-name">Brian J. Smith</p>
+          <p class="brand-sub">Library admin</p>
+        </div>
+        <nav class="admin-links">
+          <a href="../">View public site</a>
+          <a href="../ADMIN.md">Setup notes</a>
+        </nav>
+      </header>
+
+      <section class="help-card">
+        <h2>How to edit your library</h2>
+        <ol>
+          <li>Sign in with a <strong>GitHub token</strong> (not “Sign in with GitHub”, unless OAuth is set up).</li>
+          <li>Open <strong>Albums</strong>, then click one album — you edit one album at a time.</li>
+          <li>Expand a track to change audio, paste lyrics, or upload a <strong>.lrc / .vtt</strong> file.</li>
+          <li>Click <strong>Publish</strong>. Wait a minute for GitHub Pages, then refresh the public site.</li>
+        </ol>
+        <details>
+          <summary>Lyrics tips</summary>
+          <p class="tip">
+            Prefer uploading a premade <strong>.lrc</strong> or <strong>.vtt</strong> file.
+            Or paste all lines into Lyrics text — one line per lyric.
+            Timed example: <code>[0:12] Hello there</code>
+          </p>
+        </details>
+      </section>
+    </div>
+
     <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
   </body>
 </html>

@@ -1,59 +1,101 @@
 # yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
 
-# Replace YOUR_GITHUB_USERNAME/MP3-Website with your real owner/repo.
-# After deploying the OAuth worker, set base_url to that worker URL (see ADMIN.md).
 backend:
   name: github
   repo: Tyraxiss/MP3-Website
   branch: main
   # base_url: https://YOUR-WORKER.workers.dev
 
-# media_folder = path in the repo; public_folder = URL path written into catalog.json
-# Must start with / for Sveltia. Include the GitHub Pages project name.
+site_url: https://tyraxiss.github.io/MP3-Website
+display_url: https://tyraxiss.github.io/MP3-Website
+logo_url: https://tyraxiss.github.io/MP3-Website/Albums/Broken%20Thoughts/Album.png
+
+# Paths in the repo vs URLs written into content
 media_folder: Albums
 public_folder: /MP3-Website/Albums
 
 local_backend: true
 
 collections:
-  - name: catalog
-    label: Music Catalog
-    files:
-      - name: catalog
-        label: Albums & Tracks
-        file: data/catalog.json
+  - name: albums
+    label: Albums
+    label_singular: Album
+    description: >
+      Open one album at a time. Edit its cover, tracks, and lyrics, then publish.
+      New albums appear on the public site after GitHub Pages updates.
+    folder: data/albums
+    extension: json
+    format: json
+    create: true
+    delete: true
+    slug: "{{id}}"
+    identifier_field: title
+    summary: "{{title}} — {{artist}}"
+    sortable_fields:
+      fields: [title, artist, year]
+      default:
+        field: title
+        direction: ascending
+    fields:
+      - label: Album ID
+        name: id
+        widget: string
+        hint: "URL-safe id used in links, e.g. broken-thoughts (usually leave as-is)"
+      - label: Album title
+        name: title
+        widget: string
+      - label: Artist
+        name: artist
+        widget: string
+        default: Brian J. Smith
+      - label: Year
+        name: year
+        widget: number
+        value_type: int
+        required: false
+      - label: Cover art
+        name: cover
+        widget: image
+        choose_url: false
+        hint: Square cover image works best
+      - label: Tracks
+        name: tracks
+        widget: list
+        summary: "{{title}}"
+        minimize_collapsed: true
+        add_to_top: false
+        hint: Drag to reorder. Expand a track to edit audio and lyrics.
         fields:
-          - label: Albums
-            name: albums
-            widget: list
-            summary: "{{title}} — {{artist}}"
-            fields:
-              - { label: ID, name: id, widget: string, hint: "URL-safe slug, e.g. broken-thoughts" }
-              - { label: Title, name: title, widget: string }
-              - { label: Artist, name: artist, widget: string }
-              - { label: Year, name: year, widget: number, value_type: int, required: false }
-              - { label: Cover art, name: cover, widget: image }
-              - label: Tracks
-                name: tracks
-                widget: list
-                summary: "{{title}}"
-                fields:
-                  - { label: ID, name: id, widget: string }
-                  - { label: Title, name: title, widget: string }
-                  - { label: Duration (seconds), name: duration, widget: number, value_type: int, required: false }
-                  - { label: Audio file, name: src, widget: file }
-                  - label: Lyrics file (.lrc / .vtt)
-                    name: lyricsFile
-                    widget: file
-                    required: false
-                    media_folder: Albums/lyrics
-                    public_folder: /MP3-Website/Albums/lyrics
-                    hint: Upload a premade .lrc or .vtt file. Takes priority over the text box below.
-                  - label: Lyrics text
-                    name: lyrics
-                    widget: text
-                    required: false
-                    hint: >
-                      Or paste lyrics here (one line per lyric line).
-                      Optional timestamps: [0:12] Hello  or  [12.5] Hello  or  12.5 | Hello.
-                      Ignored when a lyrics file is set.
+          - label: Track ID
+            name: id
+            widget: string
+            hint: "Unique id, e.g. broken-thoughts-01"
+          - label: Song title
+            name: title
+            widget: string
+          - label: Duration (seconds)
+            name: duration
+            widget: number
+            value_type: int
+            required: false
+            hint: Optional. The player can also read length from the audio file.
+          - label: Audio file
+            name: src
+            widget: file
+            choose_url: false
+            hint: MP3 for this track
+          - label: Lyrics file (.lrc / .vtt)
+            name: lyricsFile
+            widget: file
+            required: false
+            choose_url: false
+            media_folder: Albums/lyrics
+            public_folder: /MP3-Website/Albums/lyrics
+            hint: Upload a premade .lrc or .vtt. This overrides Lyrics text when set.
+          - label: Lyrics text
+            name: lyrics
+            widget: text
+            required: false
+            hint: >
+              Paste all lyrics at once (one line per line).
+              Optional times: [0:12] Hello   or   12.5 | Hello
