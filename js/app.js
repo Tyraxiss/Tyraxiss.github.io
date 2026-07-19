@@ -686,13 +686,21 @@ function escapeAttr(value) {
 function assetUrl(path) {
   if (!path) return "";
   if (/^https?:\/\//i.test(path)) return path;
-  const parts = String(path).split("/");
-  return parts
-    .map((part, i) => {
-      if (i === 0 && (part === "." || part === "")) return part;
-      return encodeURIComponent(part);
-    })
-    .join("/");
+
+  let normalized = String(path).replace(/\\/g, "/");
+  // CMS may store absolute Paths like /MP3-Website/Albums/... — normalize to site-relative.
+  normalized = normalized.replace(/^\/MP3-Website\//i, "");
+  normalized = normalized.replace(/^\.\//, "");
+  normalized = normalized.replace(/^\//, "");
+
+  return (
+    "./" +
+    normalized
+      .split("/")
+      .filter(Boolean)
+      .map((part) => encodeURIComponent(part))
+      .join("/")
+  );
 }
 
 function bindEvents() {

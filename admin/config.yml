@@ -8,8 +8,10 @@ backend:
   branch: main
   # base_url: https://YOUR-WORKER.workers.dev
 
+# media_folder = path in the repo; public_folder = URL path written into catalog.json
+# Must start with / for Sveltia. Include the GitHub Pages project name.
 media_folder: Albums
-public_folder: ./Albums
+public_folder: /MP3-Website/Albums
 
 local_backend: true
 
