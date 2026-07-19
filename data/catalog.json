@@ -1,111 +1,9 @@
 {
   "albums": [
     {
-      "id": "the-last-of-me",
-      "title": "The Last Of Me",
-      "artist": "Brian J. Smith",
-      "year": 2026,
-      "cover": "./Albums/The Last Of Me/The Last Of Me.png",
-      "tracks": [
-        {
-          "id": "the-last-of-me-01",
-          "title": "Alive in the Static",
-          "duration": 305,
-          "src": "./Albums/The Last Of Me/Brian Smith - Alive in the Static.mp3",
-          "lyricsFile": "MP3-Website/Albums/lyrics/Brian Smith - Alive in the Static.lrc",
-          "lyrics": ""
-        },
-        {
-          "id": "the-last-of-me-02",
-          "title": "Heavy Hollow Ache",
-          "duration": 244,
-          "src": "./Albums/The Last Of Me/Brian Smith - Heavy Hollow Ache.mp3",
-          "lyrics": ""
-        },
-        {
-          "id": "the-last-of-me-03",
-          "title": "Horrid Shadow",
-          "duration": 329,
-          "src": "./Albums/The Last Of Me/Brian Smith - Horrid Shadow.mp3",
-          "lyrics": ""
-        },
-        {
-          "id": "the-last-of-me-04",
-          "title": "Ridge of the Rising Son",
-          "duration": 258,
-          "src": "./Albums/The Last Of Me/Brian Smith - Ridge of the Rising Son.mp3",
-          "lyrics": ""
-        },
-        {
-          "id": "the-last-of-me-05",
-          "title": "Static in My Veins",
-          "duration": 341,
-          "src": "./Albums/The Last Of Me/Brian Smith - Static in My Veins.mp3",
-          "lyrics": ""
-        },
-        {
-          "id": "the-last-of-me-06",
-          "title": "The Gutter’s Edge",
-          "duration": 319,
-          "src": "./Albums/The Last Of Me/Brian Smith - The Gutter’s Edge.mp3",
-          "lyrics": ""
-        },
-        {
-          "id": "the-last-of-me-07",
-          "title": "The Shame Within",
-          "duration": 294,
-          "src": "./Albums/The Last Of Me/Brian Smith - The Shame Within.mp3",
-          "lyrics": ""
-        },
-        {
-          "id": "the-last-of-me-08",
-          "title": "These Stone Walls",
-          "duration": 211,
-          "src": "./Albums/The Last Of Me/Brian Smith - These Stone Walls.mp3",
-          "lyrics": ""
-        },
-        {
-          "id": "the-last-of-me-09",
-          "title": "This Ground Holds (Revised)",
-          "duration": 253,
-          "src": "./Albums/The Last Of Me/Brian Smith - This Ground Holds (Revised).mp3",
-          "lyrics": ""
-        },
-        {
-          "id": "the-last-of-me-10",
-          "title": "Truth or Lies (Realized)",
-          "duration": 283,
-          "src": "./Albums/The Last Of Me/Brian Smith - Truth or Lies (Realized).mp3",
-          "lyrics": ""
-        },
-        {
-          "id": "the-last-of-me-11",
-          "title": "Voltage of the Unbroken",
-          "duration": 192,
-          "src": "./Albums/The Last Of Me/Brian Smith - Voltage of the Unbroken.mp3",
-          "lyrics": ""
-        },
-        {
-          "id": "the-last-of-me-12",
-          "title": "What of Me (Realized)",
-          "duration": 299,
-          "src": "./Albums/The Last Of Me/Brian Smith - What of Me (Realized).mp3",
-          "lyrics": ""
-        },
-        {
-          "id": "the-last-of-me-13",
-          "title": "Who'll Remember Me",
-          "duration": 239,
-          "src": "./Albums/The Last Of Me/Brian Smith - Who'll Remember Me.mp3",
-          "lyrics": ""
-        }
-      ]
-    },
-    {
       "id": "broken-thoughts",
       "title": "Broken Thoughts",
       "artist": "Brian J. Smith",
-      "year": null,
       "cover": "./Albums/Broken Thoughts/Album.png",
       "tracks": [
         {
@@ -191,7 +89,6 @@
       "id": "dreams-realized",
       "title": "Dreams Realized",
       "artist": "Brian J. Smith",
-      "year": null,
       "cover": "./Albums/Dreams Realized/Album.png",
       "tracks": [
         {
@@ -330,10 +227,144 @@
       ]
     },
     {
+      "id": "misc-song",
+      "title": "Misc. Song",
+      "artist": "Brian J. Smith",
+      "cover": "./Albums/Misc. Song/cover.jpg",
+      "tracks": [
+        {
+          "id": "misc-song-01",
+          "title": "Electric Night Run",
+          "duration": 243,
+          "src": "./Albums/Misc. Song/Brian Smith - Electric Night Run.mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "misc-song-02",
+          "title": "Love Afterlife",
+          "duration": 208,
+          "src": "./Albums/Misc. Song/Brian Smith - Love Afterlife.mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "misc-song-03",
+          "title": "Neon Pulse Rising",
+          "duration": 253,
+          "src": "./Albums/Misc. Song/Brian Smith - Neon Pulse Rising.mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "misc-song-04",
+          "title": "Runaway (Techno)",
+          "duration": 204,
+          "src": "./Albums/Misc. Song/Brian Smith - Runaway (Techno).mp3",
+          "lyrics": ""
+        }
+      ]
+    },
+    {
+      "id": "the-last-of-me",
+      "title": "The Last Of Me",
+      "artist": "Brian J. Smith",
+      "cover": "./Albums/The Last Of Me/The Last Of Me.png",
+      "tracks": [
+        {
+          "id": "the-last-of-me-01",
+          "title": "Alive in the Static",
+          "duration": 305,
+          "src": "./Albums/The Last Of Me/Brian Smith - Alive in the Static.mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "the-last-of-me-02",
+          "title": "Heavy Hollow Ache",
+          "duration": 244,
+          "src": "./Albums/The Last Of Me/Brian Smith - Heavy Hollow Ache.mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "the-last-of-me-03",
+          "title": "Horrid Shadow",
+          "duration": 329,
+          "src": "./Albums/The Last Of Me/Brian Smith - Horrid Shadow.mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "the-last-of-me-04",
+          "title": "Ridge of the Rising Son",
+          "duration": 258,
+          "src": "./Albums/The Last Of Me/Brian Smith - Ridge of the Rising Son.mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "the-last-of-me-05",
+          "title": "Static in My Veins",
+          "duration": 341,
+          "src": "./Albums/The Last Of Me/Brian Smith - Static in My Veins.mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "the-last-of-me-06",
+          "title": "The Gutter’s Edge",
+          "duration": 319,
+          "src": "./Albums/The Last Of Me/Brian Smith - The Gutter’s Edge.mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "the-last-of-me-07",
+          "title": "The Shame Within",
+          "duration": 294,
+          "src": "./Albums/The Last Of Me/Brian Smith - The Shame Within.mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "the-last-of-me-08",
+          "title": "These Stone Walls",
+          "duration": 211,
+          "src": "./Albums/The Last Of Me/Brian Smith - These Stone Walls.mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "the-last-of-me-09",
+          "title": "This Ground Holds (Revised)",
+          "duration": 253,
+          "src": "./Albums/The Last Of Me/Brian Smith - This Ground Holds (Revised).mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "the-last-of-me-10",
+          "title": "Truth or Lies (Realized)",
+          "duration": 283,
+          "src": "./Albums/The Last Of Me/Brian Smith - Truth or Lies (Realized).mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "the-last-of-me-11",
+          "title": "Voltage of the Unbroken",
+          "duration": 192,
+          "src": "./Albums/The Last Of Me/Brian Smith - Voltage of the Unbroken.mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "the-last-of-me-12",
+          "title": "What of Me (Realized)",
+          "duration": 299,
+          "src": "./Albums/The Last Of Me/Brian Smith - What of Me (Realized).mp3",
+          "lyrics": ""
+        },
+        {
+          "id": "the-last-of-me-13",
+          "title": "Who'll Remember Me",
+          "duration": 239,
+          "src": "./Albums/The Last Of Me/Brian Smith - Who'll Remember Me.mp3",
+          "lyrics": ""
+        }
+      ]
+    },
+    {
       "id": "thoughts-distilled",
       "title": "Thoughts Distilled",
       "artist": "Brian J. Smith",
-      "year": null,
       "cover": "./Albums/Thoughts Distilled/Album.png",
       "tracks": [
         {
@@ -446,43 +477,6 @@
           "title": "What Of Me",
           "duration": 182,
           "src": "./Albums/Thoughts Distilled/Brian Smith - What Of Me.mp3",
-          "lyrics": ""
-        }
-      ]
-    },
-    {
-      "id": "misc-song",
-      "title": "Misc. Song",
-      "artist": "Brian J. Smith",
-      "year": null,
-      "cover": "./Albums/Misc. Song/cover.jpg",
-      "tracks": [
-        {
-          "id": "misc-song-01",
-          "title": "Electric Night Run",
-          "duration": 243,
-          "src": "./Albums/Misc. Song/Brian Smith - Electric Night Run.mp3",
-          "lyrics": ""
-        },
-        {
-          "id": "misc-song-02",
-          "title": "Love Afterlife",
-          "duration": 208,
-          "src": "./Albums/Misc. Song/Brian Smith - Love Afterlife.mp3",
-          "lyrics": ""
-        },
-        {
-          "id": "misc-song-03",
-          "title": "Neon Pulse Rising",
-          "duration": 253,
-          "src": "./Albums/Misc. Song/Brian Smith - Neon Pulse Rising.mp3",
-          "lyrics": ""
-        },
-        {
-          "id": "misc-song-04",
-          "title": "Runaway (Techno)",
-          "duration": 204,
-          "src": "./Albums/Misc. Song/Brian Smith - Runaway (Techno).mp3",
           "lyrics": ""
         }
       ]
