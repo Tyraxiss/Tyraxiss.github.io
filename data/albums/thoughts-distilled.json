@@ -2,6 +2,7 @@
   "id": "thoughts-distilled",
   "title": "Thoughts Distilled",
   "artist": "Brian J. Smith",
+  "year": null,
   "cover": "./Albums/Thoughts Distilled/Album.png",
   "tracks": [
     {
@@ -9,6 +10,7 @@
       "title": "Broken Eternal",
       "duration": 220,
       "src": "./Albums/Thoughts Distilled/Brian Smith - Broken Eternal.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -16,6 +18,7 @@
       "title": "Broken Man",
       "duration": 245,
       "src": "./Albums/Thoughts Distilled/Brian Smith - Broken Man.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -23,6 +26,7 @@
       "title": "Chosen One",
       "duration": 215,
       "src": "./Albums/Thoughts Distilled/Brian Smith - Chosen One.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -30,6 +34,7 @@
       "title": "Deceptions of Justice",
       "duration": 339,
       "src": "./Albums/Thoughts Distilled/Brian Smith - Deceptions of Justice.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -37,6 +42,7 @@
       "title": "Duty and Faith",
       "duration": 202,
       "src": "./Albums/Thoughts Distilled/Brian Smith - Duty and Faith.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -44,6 +50,7 @@
       "title": "Everlasting",
       "duration": 229,
       "src": "./Albums/Thoughts Distilled/Brian Smith - Everlasting.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -51,6 +58,7 @@
       "title": "Ghosts in My Mind",
       "duration": 212,
       "src": "./Albums/Thoughts Distilled/Brian Smith - Ghosts in My Mind.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -58,6 +66,7 @@
       "title": "I've Been Broken",
       "duration": 223,
       "src": "./Albums/Thoughts Distilled/Brian Smith - I've Been Broken.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -65,6 +74,7 @@
       "title": "Inside (Forged)",
       "duration": 191,
       "src": "./Albums/Thoughts Distilled/Brian Smith - Inside (Forged).mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -72,6 +82,7 @@
       "title": "Into the Abyss",
       "duration": 186,
       "src": "./Albums/Thoughts Distilled/Brian Smith - Into the Abyss.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -79,13 +90,7 @@
       "title": "Lies",
       "duration": 164,
       "src": "./Albums/Thoughts Distilled/Brian Smith - Lies.mp3",
-      "lyrics": ""
-    },
-    {
-      "id": "thoughts-distilled-12",
-      "title": "Morbid Thoughts",
-      "duration": 195,
-      "src": "./Albums/Thoughts Distilled/Brian Smith - Morbid Thoughts.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -93,6 +98,7 @@
       "title": "Pit",
       "duration": 158,
       "src": "./Albums/Thoughts Distilled/Brian Smith - Pit.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -100,6 +106,7 @@
       "title": "Ravens Wings",
       "duration": 207,
       "src": "./Albums/Thoughts Distilled/Brian Smith - Ravens Wings.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -107,6 +114,7 @@
       "title": "These Prison Walls",
       "duration": 302,
       "src": "./Albums/Thoughts Distilled/Brian Smith - These Prison Walls.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -114,6 +122,15 @@
       "title": "What Of Me",
       "duration": 182,
       "src": "./Albums/Thoughts Distilled/Brian Smith - What Of Me.mp3",
+      "lyricsFile": "",
+      "lyrics": ""
+    },
+    {
+      "id": "morbid-thoughts-12",
+      "title": "Morbid Thoughts",
+      "duration": null,
+      "src": "/Albums/Brian Smith - Morbid Thoughts.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     }
   ]
