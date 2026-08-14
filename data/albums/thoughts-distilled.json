@@ -3,7 +3,7 @@
   "title": "Thoughts Distilled",
   "artist": "Brian J. Smith",
   "year": null,
-  "cover": "./Albums/Thoughts Distilled/Album.png",
+  "cover": "/Albums/Thoughts Distilled/Album.png",
   "tracks": [
     {
       "id": "thoughts-distilled-01",
