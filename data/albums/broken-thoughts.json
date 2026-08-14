@@ -2,13 +2,15 @@
   "id": "broken-thoughts",
   "title": "Broken Thoughts",
   "artist": "Brian J. Smith",
-  "cover": "./Albums/Broken Thoughts/Album.png",
+  "year": null,
+  "cover": "/Albums/Broken Thoughts/Album.png",
   "tracks": [
     {
       "id": "broken-thoughts-01",
       "title": "Concrete Veins (Techno-Mix)",
       "duration": 218,
       "src": "./Albums/Broken Thoughts/Brian Smith - Concrete Veins (Techno-Mix).mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -16,6 +18,7 @@
       "title": "Concrete Veins",
       "duration": 303,
       "src": "./Albums/Broken Thoughts/Brian Smith - Concrete Veins.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -23,6 +26,7 @@
       "title": "Deep (Reviled)",
       "duration": 286,
       "src": "./Albums/Broken Thoughts/Brian Smith - Deep (Reviled).mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -30,6 +34,7 @@
       "title": "Deep",
       "duration": 281,
       "src": "./Albums/Broken Thoughts/Brian Smith - Deep.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -37,6 +42,7 @@
       "title": "Echoes",
       "duration": 286,
       "src": "./Albums/Broken Thoughts/Brian Smith - Echoes.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -44,6 +50,7 @@
       "title": "Endless",
       "duration": 270,
       "src": "./Albums/Broken Thoughts/Brian Smith - Endless.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -51,6 +58,7 @@
       "title": "Listless",
       "duration": 266,
       "src": "./Albums/Broken Thoughts/Brian Smith - Listless.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -58,6 +66,7 @@
       "title": "Marque (Reforged)",
       "duration": 428,
       "src": "./Albums/Broken Thoughts/Brian Smith - Marque (Reforged).mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -65,6 +74,7 @@
       "title": "Nothing",
       "duration": 270,
       "src": "./Albums/Broken Thoughts/Brian Smith - Nothing.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -72,6 +82,7 @@
       "title": "The Unseen Control (Lust & Need)",
       "duration": 265,
       "src": "./Albums/Broken Thoughts/Brian Smith - The Unseen Control (Lust & Need).mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -79,6 +90,7 @@
       "title": "Truth or Lies",
       "duration": 236,
       "src": "./Albums/Broken Thoughts/Brian Smith - Truth or Lies.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     }
   ]
