@@ -2,13 +2,15 @@
   "id": "dreams-realized",
   "title": "Dreams Realized",
   "artist": "Brian J. Smith",
-  "cover": "./Albums/Dreams Realized/Album.png",
+  "year": null,
+  "cover": "/Albums/Dreams Realized/Dreams Realized.jpg",
   "tracks": [
     {
       "id": "dreams-realized-01",
       "title": "Autumn Leaves",
       "duration": 209,
       "src": "./Albums/Dreams Realized/Brian Smith - Autumn Leaves.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -16,6 +18,7 @@
       "title": "Billionaire's Bane",
       "duration": 254,
       "src": "./Albums/Dreams Realized/Brian Smith - Billionaire's Bane.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -23,6 +26,7 @@
       "title": "Day's Remembered",
       "duration": 204,
       "src": "./Albums/Dreams Realized/Brian Smith - Day's Remembered.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -30,6 +34,7 @@
       "title": "Dreams",
       "duration": 297,
       "src": "./Albums/Dreams Realized/Brian Smith - Dreams.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -37,6 +42,7 @@
       "title": "Empty Hands",
       "duration": 248,
       "src": "./Albums/Dreams Realized/Brian Smith - Empty Hands.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -44,6 +50,7 @@
       "title": "Fallen & Broken",
       "duration": 332,
       "src": "./Albums/Dreams Realized/Brian Smith - Fallen & Broken.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -51,6 +58,7 @@
       "title": "It Seems (I Dream)",
       "duration": 334,
       "src": "./Albums/Dreams Realized/Brian Smith - It Seems (I Dream).mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -58,6 +66,7 @@
       "title": "Lost Love",
       "duration": 205,
       "src": "./Albums/Dreams Realized/Brian Smith - Lost Love.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -65,6 +74,7 @@
       "title": "Metal Minded Man",
       "duration": 266,
       "src": "./Albums/Dreams Realized/Brian Smith - Metal Minded Man.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -72,6 +82,7 @@
       "title": "Metal Minded Woman",
       "duration": 278,
       "src": "./Albums/Dreams Realized/Brian Smith - Metal Minded Woman.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -79,6 +90,7 @@
       "title": "Of Sorrow",
       "duration": 205,
       "src": "./Albums/Dreams Realized/Brian Smith - Of Sorrow.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -86,6 +98,7 @@
       "title": "Ravens Wings",
       "duration": 287,
       "src": "./Albums/Dreams Realized/Brian Smith - Ravens Wings.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -93,6 +106,7 @@
       "title": "Runaway",
       "duration": 202,
       "src": "./Albums/Dreams Realized/Brian Smith - Runaway.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -100,6 +114,7 @@
       "title": "Sad Is",
       "duration": 182,
       "src": "./Albums/Dreams Realized/Brian Smith - Sad Is.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -107,6 +122,7 @@
       "title": "Seen",
       "duration": 277,
       "src": "./Albums/Dreams Realized/Brian Smith - Seen.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -114,6 +130,7 @@
       "title": "Shattered Soul",
       "duration": 308,
       "src": "./Albums/Dreams Realized/Brian Smith - Shattered Soul.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -121,6 +138,7 @@
       "title": "She's So Divine",
       "duration": 196,
       "src": "./Albums/Dreams Realized/Brian Smith - She's So Divine.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -128,6 +146,7 @@
       "title": "This Ground Holds",
       "duration": 264,
       "src": "./Albums/Dreams Realized/Brian Smith - This Ground Holds.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -135,6 +154,7 @@
       "title": "Together",
       "duration": 239,
       "src": "./Albums/Dreams Realized/Brian Smith - Together.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     }
   ]
