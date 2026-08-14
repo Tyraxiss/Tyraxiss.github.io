@@ -3,7 +3,7 @@
   "title": "The Last Of Me",
   "artist": "Brian J. Smith",
   "year": null,
-  "cover": "./Albums/The Last Of Me/The Last Of Me.png",
+  "cover": "/Albums/The Last Of Me/The Last Of Me.png",
   "tracks": [
     {
       "id": "the-last-of-me-01",
@@ -26,6 +26,7 @@
       "title": "Horrid Shadow",
       "duration": 329,
       "src": "./Albums/The Last Of Me/Brian Smith - Horrid Shadow.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -33,6 +34,7 @@
       "title": "Ridge of the Rising Son",
       "duration": 258,
       "src": "./Albums/The Last Of Me/Brian Smith - Ridge of the Rising Son.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -40,6 +42,7 @@
       "title": "Static in My Veins",
       "duration": 341,
       "src": "./Albums/The Last Of Me/Brian Smith - Static in My Veins.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -47,6 +50,7 @@
       "title": "The Gutter’s Edge",
       "duration": 319,
       "src": "./Albums/The Last Of Me/Brian Smith - The Gutter’s Edge.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -62,6 +66,7 @@
       "title": "These Stone Walls",
       "duration": 211,
       "src": "./Albums/The Last Of Me/Brian Smith - These Stone Walls.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -69,6 +74,7 @@
       "title": "This Ground Holds (Revised)",
       "duration": 253,
       "src": "./Albums/The Last Of Me/Brian Smith - This Ground Holds (Revised).mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -76,6 +82,7 @@
       "title": "Truth or Lies (Realized)",
       "duration": 283,
       "src": "./Albums/The Last Of Me/Brian Smith - Truth or Lies (Realized).mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -83,6 +90,7 @@
       "title": "Voltage of the Unbroken",
       "duration": 192,
       "src": "./Albums/The Last Of Me/Brian Smith - Voltage of the Unbroken.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -90,6 +98,7 @@
       "title": "What of Me (Realized)",
       "duration": 299,
       "src": "./Albums/The Last Of Me/Brian Smith - What of Me (Realized).mp3",
+      "lyricsFile": "",
       "lyrics": ""
     },
     {
@@ -97,6 +106,7 @@
       "title": "Who'll Remember Me",
       "duration": 239,
       "src": "./Albums/The Last Of Me/Brian Smith - Who'll Remember Me.mp3",
+      "lyricsFile": "",
       "lyrics": ""
     }
   ]
