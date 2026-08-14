@@ -108,6 +108,14 @@
       "src": "./Albums/The Last Of Me/Brian Smith - Who'll Remember Me.mp3",
       "lyricsFile": "",
       "lyrics": ""
+    },
+    {
+      "id": "the-last-of-me-13",
+      "title": "Morbid Thoughts (Downtrodden)",
+      "duration": null,
+      "src": "/Albums/The Last Of Me/Brian Smith - Morbid Thoughts (Downtrodden).mp3",
+      "lyricsFile": "",
+      "lyrics": ""
     }
   ]
 }
