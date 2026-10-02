@@ -38,7 +38,7 @@ MIN_COVER_BYTES = 20_000
 
 
 def _abs(site_rel: str) -> Path:
-    return ROOT / str(site_rel).lstrip("./").replace("/", "\\")
+    return ROOT.joinpath(*str(site_rel).lstrip("./").split("/"))
 
 
 def validate(catalog_path: Path = CATALOG_PATH, strict: bool = False) -> int:

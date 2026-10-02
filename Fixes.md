@@ -55,9 +55,29 @@ Current state: **5 albums / 66 tracks, validator clean (0 errors).**
   (Downtrodden), Still Here) — 13 → 16, catalog rebuilt.
 - **Unused MP4s removed** (3 files, ~6.9 MB) and confirmed referenced nowhere.
 
+- **Mobile: play/pause was cut off at the bottom.** On phones the app shell is a
+  three-row grid (topbar / content / player). The bottom row (the player) was
+  pushed below the fold and clipped by the browser chrome, which is what the
+  screenshot showed. Measured against the live site: on an iPhone SE the play
+  button's bottom sat at **687px inside a 667px viewport**, and the document
+  scrolled 749px — i.e. the player was genuinely off-screen, not just tight.
+  The shipped fix is the mobile layout in `css/style.css` (the `@media
+  (max-width: 900px)` block relaxes `--player-h` to `auto`, lets the content row
+  shrink via `min-height: 0`, and pads for `env(safe-area-inset-bottom)`), plus
+  `viewport-fit=cover` in `index.html`. Verified against six emulated devices.
+- **`tests/mobile.cjs`** — 54 layout checks across six real device sizes (iPhone
+  SE/12, Pixel 5, Galaxy S8+, small landscape, tablet) asserting the player bar,
+  play button and transport row stay inside the viewport, with no page or
+  horizontal overflow, on both the home grid and the album view. It also asserts
+  a ≥40px tap target. Run it against any URL to reproduce:
+  `node tests/mobile.cjs https://tyraxiss.github.io/`.
+  This same audit is wired into CI as a separate `layout` job, so the player bar
+  cannot silently regress below the fold again.
+
 ### Hygiene
 
-- `.gitignore` now covers `__pycache__/` and `*.pyc`.
+- `.gitignore` now covers `__pycache__/`, `*.pyc`, `node_modules/` and local
+  test screenshots.
 - Mobile safe-area fix (`env(safe-area-inset-bottom)`, `viewport-fit=cover`).
 - Inline SVG favicon added — was a 404 on every page load.
 - Admin link toned down to an icon so visitors aren't prompted to sign in.
@@ -72,21 +92,25 @@ Current state: **5 albums / 66 tracks, validator clean (0 errors).**
 
 ## Still open
 
+- **Album years set:** 2025 for *Broken Thoughts*, *Dreams Realized*,
+  *Misc. Song* and *Thoughts Distilled*; 2026 for *The Last Of Me*. Shown in the
+  home grid ("11 tracks · 2025") and the album hero, and searchable.
+- **`Misc. Song/cover.jpg` is 9 KB** vs 1.5–2.7 MB for the other covers, so it
+  will look blurry in the grid. Needs a real replacement image.
 - **Lyrics: 1 of 66 tracks.** Only "Alive in the Static" has any. The karaoke
   feature works but has almost nothing to show. This is content work, not code —
   paste lyrics in the CMS or upload `.lrc` / `.vtt`.
-- **`year` is unset on 4 of 5 albums** (the one set value is `null`). Needed for
-  the CMS sort field and the home-grid metadata. **Needs the real years from
-  you** — I did not want to guess.
-- **`Misc. Song/cover.jpg` is 9 KB** vs 1.5–2.7 MB for the other covers, so it
-  will look blurry in the grid. Needs a real replacement image.
-- **Possible duplicate songs across albums** — "Ravens Wings" (*Dreams Realized*
-  and *Thoughts Distilled*), "This Ground Holds" (*Dreams Realized* and *The
-  Last Of Me*), "Truth or Lies" (*Broken Thoughts* and *The Last Of Me*).
-  Intentional variants or accidental? Not touched.
 - **Repo size ~490 MB.** Deliberately left alone (decision: keep audio
   quality). GitHub warns at 1 GB and hard-blocks at 5 GB; there's room for
   roughly 4–5 more albums. Guidance is in `ADMIN.md`.
+
+## Confirmed intentional
+
+- **Repeated song titles across albums are deliberate variants** — "Ravens
+  Wings" (*Dreams Realized* / *Thoughts Distilled*), "This Ground Holds"
+  (*Dreams Realized* / *The Last Of Me*), "Truth or Lies" (*Broken Thoughts* /
+  *The Last Of Me*). Left exactly as they are; the `(Revised)` / `(Realized)`
+  suffixes that distinguish them are correct.
 
 ## Dropped from the original list
 

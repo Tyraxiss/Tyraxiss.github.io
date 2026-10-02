@@ -2,6 +2,7 @@
   "id": "misc-song",
   "title": "Misc. Song",
   "artist": "Brian J. Smith",
+  "year": 2025,
   "cover": "./Albums/Misc. Song/cover.jpg",
   "tracks": [
     {

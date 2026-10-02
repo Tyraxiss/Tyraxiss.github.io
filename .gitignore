@@ -10,3 +10,7 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+
+# Node / test artifacts
+node_modules/
+tests/shot-*.png

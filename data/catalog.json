@@ -4,6 +4,7 @@
       "id": "broken-thoughts",
       "title": "Broken Thoughts",
       "artist": "Brian J. Smith",
+      "year": 2025,
       "cover": "./Albums/Broken Thoughts/Album.png",
       "tracks": [
         {
@@ -89,6 +90,7 @@
       "id": "dreams-realized",
       "title": "Dreams Realized",
       "artist": "Brian J. Smith",
+      "year": 2025,
       "cover": "./Albums/Dreams Realized/Dreams Realized.jpg",
       "tracks": [
         {
@@ -230,6 +232,7 @@
       "id": "misc-song",
       "title": "Misc. Song",
       "artist": "Brian J. Smith",
+      "year": 2025,
       "cover": "./Albums/Misc. Song/cover.jpg",
       "tracks": [
         {
@@ -266,7 +269,7 @@
       "id": "the-last-of-me",
       "title": "The Last Of Me",
       "artist": "Brian J. Smith",
-      "year": null,
+      "year": 2026,
       "cover": "./Albums/The Last Of Me/The Last Of Me.png",
       "tracks": [
         {
@@ -388,6 +391,7 @@
       "id": "thoughts-distilled",
       "title": "Thoughts Distilled",
       "artist": "Brian J. Smith",
+      "year": 2025,
       "cover": "./Albums/Thoughts Distilled/Album.png",
       "tracks": [
         {

@@ -2,7 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const ROOT = "C:\\Coding\\Projects\\MP3-Website";
+const ROOT = path.resolve(__dirname, "..");
 const src = fs
   .readFileSync(path.join(ROOT, "js", "app.js"), "utf8")
   .replace(/\r\n/g, "\n");

@@ -8,6 +8,11 @@ on:
       - "data/catalog.json"
       - "scripts/**"
       - "Albums/**"
+      - "js/**"
+      - "css/**"
+      - "index.html"
+      - "tests/**"
+      - ".github/workflows/sync-catalog.yml"
   workflow_dispatch:
 
 permissions:
@@ -56,3 +61,33 @@ jobs:
           file_pattern: data/catalog.json
           commit_user_name: github-actions[bot]
           commit_user_email: github-actions[bot]@users.noreply.github.com
+
+  # Real-browser mobile layout audit. Guards the regression where the player
+  # bar (and its play/pause button) was pushed below the fold on phones.
+  layout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Puppeteer
+        run: |
+          npm install --no-save puppeteer
+          npx puppeteer browsers install chrome
+
+      - name: Serve the site
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 &
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:8765/index.html > /dev/null; then break; fi
+            sleep 1
+          done
+          curl -sf http://127.0.0.1:8765/index.html > /dev/null
+
+      - name: Audit mobile layout
+        run: node tests/mobile.cjs http://127.0.0.1:8765/

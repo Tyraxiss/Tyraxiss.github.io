@@ -55,9 +55,9 @@ def load_existing_albums() -> dict:
     return albums
 
 
-def abs_path(site_rel: str):
-    """'./Albums/x/y.mp3' -> absolute Path under ROOT."""
-    return ROOT / site_rel.lstrip("./").replace("/", "\\")
+def abs_path(site_rel: str) -> Path:
+    """'./Albums/x/y.mp3' -> absolute Path under ROOT (works on Windows + POSIX)."""
+    return ROOT.joinpath(*str(site_rel).lstrip("./").split("/"))
 
 
 def reconcile_album(album: dict, folder, dry_run: bool):
