@@ -10,7 +10,14 @@
       "title": "Alive in the Static",
       "duration": 305,
       "src": "./Albums/The Last Of Me/Brian Smith - Alive in the Static.mp3",
-      "lyricsFile": "Albums/lyrics/Brian Smith - Alive in the Static.lrc",
+      "lyricsFile": "./Albums/lyrics/Brian Smith - Alive in the Static.lrc",
+      "lyrics": ""
+    },
+    {
+      "id": "the-last-of-me-14",
+      "title": "Blue-Eyed Angel",
+      "duration": 232,
+      "src": "./Albums/The Last Of Me/Brian Smith - Blue-Eyed Angel.mp3",
       "lyrics": ""
     },
     {
@@ -28,6 +35,13 @@
       "lyrics": ""
     },
     {
+      "id": "the-last-of-me-15",
+      "title": "Morbid Thoughts (Downtrodden)",
+      "duration": 250,
+      "src": "./Albums/The Last Of Me/Brian Smith - Morbid Thoughts (Downtrodden).mp3",
+      "lyrics": ""
+    },
+    {
       "id": "the-last-of-me-04",
       "title": "Ridge of the Rising Son",
       "duration": 258,
@@ -39,6 +53,13 @@
       "title": "Static in My Veins",
       "duration": 341,
       "src": "./Albums/The Last Of Me/Brian Smith - Static in My Veins.mp3",
+      "lyrics": ""
+    },
+    {
+      "id": "the-last-of-me-16",
+      "title": "Still Here",
+      "duration": 222,
+      "src": "./Albums/The Last Of Me/Brian Smith - Still Here.mp3",
       "lyrics": ""
     },
     {

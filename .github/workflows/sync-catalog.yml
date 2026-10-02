@@ -5,7 +5,10 @@ on:
     branches: [main]
     paths:
       - "data/albums/**"
-      - "scripts/sync_catalog.py"
+      - "data/catalog.json"
+      - "scripts/**"
+      - "Albums/**"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -24,8 +27,27 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Set up ffmpeg
+        uses: Federico/b1n-linux-ffmpeg@v1.1.1
+
+      - name: Run pipeline tests
+        run: |
+          python tests/test_catalog.py
+          python tests/test_validate.py
+
       - name: Rebuild catalog.json
         run: python scripts/sync_catalog.py sync
+
+      - name: Validate the rebuilt catalog against the audio on disk
+        run: python scripts/validate_catalog.py
+
+      - name: Verify player logic
+        run: node tests/app-logic.test.js
 
       - name: Commit catalog if changed
         uses: stefanzweifel/git-auto-commit-action@v5

@@ -4,3 +4,9 @@ Desktop.ini
 *.sfk
 *.tmp
 .cursor/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/

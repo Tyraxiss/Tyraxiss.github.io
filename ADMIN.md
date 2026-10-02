@@ -101,15 +101,58 @@ Then open the printed URL (not a raw `file://` path).
 You can also drop album folders into `Albums/` (not `Albums/lyrics/`) and rebuild:
 
 ```bash
-# Scan disk folders → data/albums/*.json AND data/catalog.json
+# Scan disk folders, overlay real durations/cover art onto the album JSONs,
+# then rebuild catalog.json. Safe: it never overwrites lyrics or lyric files.
 python scripts/build_catalog.py
-python scripts/sync_catalog.py split
+
+# Preview what would change without writing anything
+python scripts/build_catalog.py --dry-run
 ```
 
-Or if you only edited `data/albums/*.json`:
+If you only edited `data/albums/*.json` by hand or in the CMS, just merge:
 
 ```bash
 python scripts/sync_catalog.py sync
 ```
 
+### Checking your work
+
+```bash
+# Fails loudly on missing audio, missing cover art, duplicate track ids,
+# wrong durations and broken lyricsFile paths. Exits non-zero on problems.
+python scripts/validate_catalog.py
+
+# Make warnings (e.g. tiny cover art) fail too
+python scripts/validate_catalog.py --strict
+```
+
+The same validation runs automatically in CI on every push, so a broken
+catalog can never reach the live site.
+
+### Tests
+
+```bash
+python tests/test_catalog.py    # pipeline helpers + shipped catalog invariants
+python tests/test_validate.py   # proves the validator catches real breakage
+node  tests/app-logic.test.js   # lyric parsing, shuffle, search, URL encoding
+```
+
 Keep individual MP3s under **100 MB**. Git **LFS does not work** with GitHub Pages.
+
+### About repository size
+
+Audio is committed straight into git (LFS is not an option on Pages), so the
+repo grows with every track. It currently holds roughly 500 MB of audio, which
+is fine — GitHub only *warns* above 1 GB and hard-blocks at 5 GB.
+
+If you ever approach that warning, the options in order of preference are:
+lower the bitrate of new uploads, move audio to external hosting and point
+`src` at CDN URLs, or start a fresh repo without history. Re-encoding the
+existing files in place is the least attractive option — it is lossy-to-lossy,
+so it permanently degrades the masters for a modest saving.
+
+### Adding songs
+
+Drop the audio file into the album folder and run `python scripts/build_catalog.py`.
+It adds the track with the real duration read from the file, assigns it a stable
+id, and keeps every existing track's lyrics intact. Re-running it is always safe.

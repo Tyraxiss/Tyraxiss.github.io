@@ -1,6 +1,14 @@
 const CATALOG_URL = "./data/catalog.json";
 const THEME_KEY = "bs-theme";
 const KARAOKE_KEY = "bs-karaoke";
+const VOLUME_KEY = "bs-volume";
+const LAST_TRACK_KEY = "bs-last-track";
+const POSITION_KEY = "bs-position";
+
+// Resume within this many seconds of the end means "finished", don't resume.
+const RESUME_TOLERANCE = 15;
+
+const DEFAULT_VOLUME = 0.85;
 
 const state = {
   albums: [],
@@ -14,7 +22,112 @@ const state = {
   activeLyricIndex: -1,
   karaokeEnabled: true,
   lyricsAreTimed: false,
+  queue: [], // [{ albumId, trackIndex }] consumed before normal next logic
+  shufflePlayed: [], // indices already played, so shuffle never repeats itself
+  query: "", // album/track search text
 };
+
+/* ---------------------------------------------------------------- storage */
+
+function readNumber(key, fallback = null) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw === null) return fallback;
+    const value = Number(raw);
+    return Number.isFinite(value) ? value : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function writeValue(key, value) {
+  try {
+    localStorage.setItem(key, String(value));
+  } catch {
+    // ignore storage failures (private mode, quota, etc.)
+  }
+}
+
+function removeValue(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // ignore
+  }
+}
+
+function trackKey(albumId, trackIndex) {
+  return `${albumId}::${trackIndex}`;
+}
+
+function saveVolume() {
+  writeValue(VOLUME_KEY, audio.volume.toFixed(2));
+}
+
+function restoreVolume() {
+  const saved = readNumber(VOLUME_KEY, DEFAULT_VOLUME);
+  const volume = Math.min(1, Math.max(0, saved));
+  audio.volume = volume;
+  if (els.volume) els.volume.value = String(volume);
+  return volume;
+}
+
+function savePlaybackPosition() {
+  const current = getCurrentTrack();
+  if (!current || !Number.isFinite(audio.currentTime)) return;
+  writeValue(LAST_TRACK_KEY, trackKey(current.album.id, current.trackIndex));
+  writeValue(POSITION_KEY, Math.floor(audio.currentTime));
+}
+
+/** Track saved on the previous visit, if it still exists in the catalog. */
+function loadSavedPlayback() {
+  const savedKey = (() => {
+    try {
+      return localStorage.getItem(LAST_TRACK_KEY);
+    } catch {
+      return null;
+    }
+  })();
+  if (!savedKey) return null;
+
+  const [albumId, indexRaw] = savedKey.split("::");
+  const trackIndex = Number(indexRaw);
+  const album = getAlbum(albumId);
+  if (!album || !Number.isInteger(trackIndex) || !album.tracks?.[trackIndex]) {
+    return null;
+  }
+
+  const position = readNumber(POSITION_KEY, 0);
+  const duration = album.tracks[trackIndex].duration;
+  // Skip resume when the listener was basically at the end of the track.
+  if (!position || position < 5) return null;
+  if (Number.isFinite(duration) && position > duration - RESUME_TOLERANCE) return null;
+  return { albumId, trackIndex, position };
+}
+
+/* ------------------------------------------------------------------ toast */
+
+let toastTimer = 0;
+
+function showToast(message, { duration = 4200 } = {}) {
+  let node = document.getElementById("toast");
+  if (!node) {
+    node = document.createElement("div");
+    node.id = "toast";
+    node.className = "toast";
+    node.setAttribute("role", "status");
+    node.setAttribute("aria-live", "polite");
+    document.body.appendChild(node);
+  }
+
+  node.textContent = message;
+  node.classList.add("is-visible");
+
+  window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => {
+    node.classList.remove("is-visible");
+  }, duration);
+}
 
 function getTheme() {
   return document.documentElement.getAttribute("data-theme") === "dark"
@@ -261,7 +374,7 @@ function refreshAtmosphere() {
 
 const audio = new Audio();
 audio.preload = "metadata";
-audio.volume = 0.85;
+audio.volume = DEFAULT_VOLUME;
 
 const els = {
   viewRoot: document.getElementById("view-root"),
@@ -594,6 +707,17 @@ function renderSidebar() {
     .join("");
 }
 
+function matchesQuery(album) {
+  const query = state.query.trim().toLowerCase();
+  if (!query) return true;
+  if (album.title?.toLowerCase().includes(query)) return true;
+  if (album.artist?.toLowerCase().includes(query)) return true;
+  if (String(album.year ?? "").includes(query)) return true;
+  return (album.tracks || []).some((track) =>
+    track.title?.toLowerCase().includes(query)
+  );
+}
+
 function renderHome() {
   if (!state.albums.length) {
     els.viewRoot.innerHTML = `
@@ -605,22 +729,62 @@ function renderHome() {
     return;
   }
 
+  const visible = state.albums.filter(matchesQuery);
+  const query = state.query.trim();
+
   els.viewRoot.innerHTML = `
     <div class="home-intro">
       <h1>Brian J. Smith</h1>
       <p>A quiet place for the albums — open one and press play.</p>
     </div>
+    ${
+      query
+        ? `<p class="search-note">${
+            visible.length
+              ? `${visible.length} album${visible.length === 1 ? "" : "s"} matching “${escapeHtml(query)}”`
+              : `No albums match “${escapeHtml(query)}”`
+          }</p>`
+        : ""
+    }
     <div class="album-grid">
-      ${state.albums
-        .map(
-          (album) => `
+      ${
+        visible.length
+          ? visible
+              .map(
+                (album) => `
         <button type="button" class="album-card" data-open-album="${album.id}">
           <div class="album-card-art-wrap album-frame">
             <img src="${escapeAttr(assetUrl(album.cover))}" alt="" loading="lazy" />
           </div>
           <p class="album-card-title">${escapeHtml(album.title)}</p>
-          <p class="album-card-meta">${(album.tracks || []).length} tracks${album.year ? ` · ${album.year}` : ""}</p>
+          <p class="album-card-meta">${(album.tracks || []).length} tracks${
+                  album.year ? ` · ${escapeHtml(String(album.year))}` : ""
+                }</p>
         </button>`
+              )
+              .join("")
+          : `<p class="state-msg">Nothing found. Try a different search.</p>`
+      }
+    </div>
+  `;
+}
+
+/** Pulsing placeholder grid shown while catalog.json is still loading. */
+function renderSkeleton() {
+  els.viewRoot.innerHTML = `
+    <div class="home-intro">
+      <h1>Brian J. Smith</h1>
+      <p class="skeleton-line"></p>
+    </div>
+    <div class="album-grid">
+      ${Array.from({ length: 5 })
+        .map(
+          () => `
+        <div class="album-card skeleton-card" aria-hidden="true">
+          <div class="album-card-art-wrap album-frame skeleton-art"></div>
+          <p class="skeleton-line"></p>
+          <p class="skeleton-line skeleton-line-short"></p>
+        </div>`
         )
         .join("")}
     </div>
@@ -638,7 +802,7 @@ function renderAlbum(albumId) {
   }
 
   const current = getCurrentTrack();
-  const yearBit = album.year ? ` · ${album.year}` : "";
+  const yearBit = album.year ? ` · ${escapeHtml(String(album.year))}` : "";
   const tracks = Array.isArray(album.tracks) ? album.tracks : [];
 
   els.viewRoot.innerHTML = `
@@ -653,6 +817,14 @@ function renderAlbum(albumId) {
         <p class="album-hero-meta">
           ${escapeHtml(album.artist)}${yearBit} · ${tracks.length} tracks
         </p>
+        <div class="album-hero-actions">
+          <button type="button" class="ctrl ctrl-text hero-action" data-play-album-all>
+            ▶ Play All
+          </button>
+          <button type="button" class="ctrl ctrl-text hero-action" data-shuffle-album-all>
+            Shuffle
+          </button>
+        </div>
       </div>
     </div>
     <div class="track-list" role="list">
@@ -663,16 +835,33 @@ function renderAlbum(albumId) {
             current.album.id === album.id &&
             current.trackIndex === index;
           return `
-          <button
-            type="button"
-            class="track-row${isCurrent ? " is-current" : ""}"
-            data-play-track="${index}"
-            role="listitem"
-          >
-            <span class="track-num">${String(index + 1).padStart(2, "0")}</span>
-            <span class="track-title">${escapeHtml(track.title)}</span>
-            <span class="track-dur">${formatTime(track.duration)}</span>
-          </button>`;
+          <div class="track-row-wrap${isCurrent ? " is-current" : ""}" role="listitem">
+            <button
+              type="button"
+              class="track-row"
+              data-play-track="${index}"
+            >
+              <span class="track-num">${String(index + 1).padStart(2, "0")}</span>
+              <span class="track-title">${escapeHtml(track.title)}</span>
+              <span class="track-dur">${formatTime(track.duration)}</span>
+            </button>
+            <div class="track-tools">
+              <button
+                type="button"
+                class="track-tool"
+                data-queue-track="${index}"
+                title="Play next"
+                aria-label="Play ${escapeAttr(track.title)} next"
+              >＋</button>
+              <a
+                class="track-tool"
+                href="${escapeAttr(assetUrl(track.src))}"
+                download
+                title="Download"
+                aria-label="Download ${escapeAttr(track.title)}"
+              >↓</a>
+            </div>
+          </div>`;
         })
         .join("")}
     </div>
@@ -754,6 +943,12 @@ function updateProgress() {
   updateLyricsHighlight(current);
 }
 
+/** Add a track to the cross-album "play next" queue. */
+function enqueueTrack(albumId, trackIndex) {
+  if (!getAlbum(albumId)?.tracks?.[trackIndex]) return;
+  state.queue.push({ albumId, trackIndex });
+}
+
 async function playTrack(albumId, trackIndex, { autoplay = true } = {}) {
   const album = getAlbum(albumId);
   const tracks = Array.isArray(album?.tracks) ? album.tracks : [];
@@ -765,6 +960,7 @@ async function playTrack(albumId, trackIndex, { autoplay = true } = {}) {
   const track = tracks[trackIndex];
   audio.src = assetUrl(track.src);
   updateNowPlaying();
+  updateDocumentTitle();
   renderView();
   if (!els.lyricsPanel.hidden) renderLyrics();
   applyCoverAtmosphere(album.cover);
@@ -780,19 +976,40 @@ async function playTrack(albumId, trackIndex, { autoplay = true } = {}) {
   updatePlayButton();
 }
 
+function updateDocumentTitle() {
+  const current = getCurrentTrack();
+  document.title = current
+    ? `${current.track.title} · ${current.album.title} · Brian J. Smith`
+    : "Brian J. Smith";
+}
+
+/** Next shuffled index for an album, avoiding recently played tracks. */
+function pickShuffleIndex(tracks, fromIndex) {
+  if (tracks.length <= 1) return 0;
+
+  // Forget everything once the whole album has been played in this cycle.
+  if (state.shufflePlayed.length >= tracks.length) state.shufflePlayed = [];
+
+  const candidates = tracks
+    .map((_, index) => index)
+    .filter((index) => index !== fromIndex && !state.shufflePlayed.includes(index));
+
+  const pool = candidates.length ? candidates : tracks.map((_, i) => i).filter((i) => i !== fromIndex);
+  const next = pool[Math.floor(Math.random() * pool.length)];
+  state.shufflePlayed.push(next);
+  return next;
+}
+
 function nextIndex(album, fromIndex, { force = false } = {}) {
   const tracks = Array.isArray(album.tracks) ? album.tracks : [];
+  if (!tracks.length) return null;
   if (state.repeat === "one" && !force) return fromIndex;
 
   if (state.shuffle) {
     if (tracks.length <= 1) {
       return state.repeat === "off" ? null : fromIndex;
     }
-    let next = fromIndex;
-    while (next === fromIndex) {
-      next = Math.floor(Math.random() * tracks.length);
-    }
-    return next;
+    return pickShuffleIndex(tracks, fromIndex);
   }
 
   const next = fromIndex + 1;
@@ -804,6 +1021,11 @@ function nextIndex(album, fromIndex, { force = false } = {}) {
 function prevIndex(album, fromIndex) {
   const tracks = Array.isArray(album.tracks) ? album.tracks : [];
   if (state.shuffle) {
+    // Step back through what shuffle already played.
+    if (state.shufflePlayed.length > 1) {
+      state.shufflePlayed.pop();
+      return state.shufflePlayed[state.shufflePlayed.length - 1];
+    }
     return nextIndex(album, fromIndex, { force: true });
   }
   const prev = fromIndex - 1;
@@ -815,9 +1037,18 @@ function prevIndex(album, fromIndex) {
 async function playNext({ force = false } = {}) {
   const current = getCurrentTrack();
   if (!current) return;
+
+  // Queued tracks win over normal album order.
+  if (state.queue.length && !force) {
+    const next = state.queue.shift();
+    await playTrack(next.albumId, next.trackIndex);
+    return;
+  }
+
   const next = nextIndex(current.album, current.trackIndex, { force });
   if (next === null) {
     audio.pause();
+    removeValue(POSITION_KEY);
     updatePlayButton();
     return;
   }
@@ -837,7 +1068,9 @@ async function playPrev() {
 
 function toggleShuffle() {
   state.shuffle = !state.shuffle;
+  state.shufflePlayed = [];
   els.btnShuffle.setAttribute("aria-pressed", String(state.shuffle));
+  showToast(state.shuffle ? "Shuffle on" : "Shuffle off", { duration: 1600 });
 }
 
 function cycleRepeat() {
@@ -1046,6 +1279,36 @@ function bindEvents() {
       return;
     }
 
+    if (event.target.closest("[data-play-album-all]") && state.albumId) {
+      state.shufflePlayed = [];
+      await playTrack(state.albumId, 0);
+      return;
+    }
+
+    if (event.target.closest("[data-shuffle-album-all]") && state.albumId) {
+      const album = getAlbum(state.albumId);
+      const total = album?.tracks?.length || 0;
+      if (!total) return;
+      if (!state.shuffle) {
+        state.shuffle = true;
+        els.btnShuffle.setAttribute("aria-pressed", "true");
+      }
+      state.shufflePlayed = [];
+      await playTrack(state.albumId, pickShuffleIndex(album.tracks, -1));
+      return;
+    }
+
+    const queued = event.target.closest("[data-queue-track]");
+    if (queued && state.albumId) {
+      const index = Number(queued.getAttribute("data-queue-track"));
+      enqueueTrack(state.albumId, index);
+      const album = getAlbum(state.albumId);
+      showToast(`Queued: ${album?.tracks?.[index]?.title ?? "track"}`, {
+        duration: 2200,
+      });
+      return;
+    }
+
     const row = event.target.closest("[data-play-track]");
     if (row && state.albumId) {
       const index = Number(row.getAttribute("data-play-track"));
@@ -1082,7 +1345,68 @@ function bindEvents() {
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !els.lyricsPanel.hidden) closeLyrics();
+    // Never hijack typing (search box, CMS fields, etc.).
+    const target = event.target;
+    const typing =
+      target instanceof HTMLElement &&
+      (target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.tagName === "SELECT" ||
+        target.isContentEditable);
+
+    if (event.key === "Escape") {
+      if (!els.lyricsPanel.hidden) closeLyrics();
+      else if (typing) target.blur();
+      return;
+    }
+    if (typing || event.metaKey || event.altKey) return;
+
+    const current = getCurrentTrack();
+    const hasTrack = Boolean(current);
+
+    switch (event.key) {
+      case " ":
+      case "Spacebar":
+        event.preventDefault();
+        els.btnPlay.click();
+        break;
+      case "ArrowRight":
+        event.preventDefault();
+        if (event.ctrlKey) playNext({ force: true });
+        else if (hasTrack) audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 5);
+        break;
+      case "ArrowLeft":
+        event.preventDefault();
+        if (event.ctrlKey) playPrev();
+        else if (hasTrack) audio.currentTime = Math.max(0, audio.currentTime - 5);
+        break;
+      case "ArrowUp":
+        event.preventDefault();
+        audio.volume = Math.min(1, audio.volume + 0.05);
+        els.volume.value = String(audio.volume);
+        saveVolume();
+        break;
+      case "ArrowDown":
+        event.preventDefault();
+        audio.volume = Math.max(0, audio.volume - 0.05);
+        els.volume.value = String(audio.volume);
+        saveVolume();
+        break;
+      case "s":
+      case "S":
+        toggleShuffle();
+        break;
+      case "r":
+      case "R":
+        cycleRepeat();
+        break;
+      case "l":
+      case "L":
+        toggleLyrics();
+        break;
+      default:
+        break;
+    }
   });
 
   const endSeek = () => {
@@ -1117,13 +1441,37 @@ function bindEvents() {
 
   els.volume.addEventListener("input", () => {
     audio.volume = Number(els.volume.value);
+    saveVolume();
   });
 
   audio.addEventListener("timeupdate", updateProgress);
   audio.addEventListener("loadedmetadata", updateProgress);
   audio.addEventListener("play", updatePlayButton);
-  audio.addEventListener("pause", updatePlayButton);
+  audio.addEventListener("pause", () => {
+    updatePlayButton();
+    savePlaybackPosition();
+  });
   audio.addEventListener("ended", () => playNext());
+
+  // A missing or undecodable MP3 used to leave the player silently stalled.
+  audio.addEventListener("error", () => {
+    const current = getCurrentTrack();
+    if (!current || !audio.getAttribute("src")) return;
+
+    const unsupported =
+      audio.error && audio.error.code === 4; // MEDIA_ERR_SRC_NOT_SUPPORTED
+    showToast(
+      `“${current.track.title}” ${unsupported ? "could not be decoded" : "could not be loaded"}. Skipping…`
+    );
+    audio.pause();
+    removeValue(POSITION_KEY);
+    window.setTimeout(() => playNext({ force: true }), 900);
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") savePlaybackPosition();
+  });
+  window.addEventListener("pagehide", savePlaybackPosition);
 
   window.addEventListener("hashchange", () => {
     const route = parseHash();
@@ -1132,10 +1480,32 @@ function bindEvents() {
   });
 }
 
+// Instant re-filter as the user types, without re-rendering the whole shell.
+function bindSearch() {
+  const input = document.getElementById("album-search");
+  if (!input) return;
+  input.value = state.query;
+  input.addEventListener("input", () => {
+    state.query = input.value;
+    if (state.view === "home") renderHome();
+  });
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      state.query = "";
+      input.value = "";
+      renderHome();
+      input.blur();
+    }
+  });
+}
+
 async function init() {
   loadKaraokePreference();
   setTheme(getTheme());
+  restoreVolume();
   bindEvents();
+  renderSkeleton();
+  bindSearch();
 
   try {
     const res = await fetch(`${CATALOG_URL}?v=${Date.now()}`, { cache: "no-store" });
@@ -1161,8 +1531,59 @@ async function init() {
   } else {
     showHome();
   }
+
+  // Offer to pick up where the listener left off.
+  const saved = loadSavedPlayback();
+  if (saved) {
+    const album = getAlbum(saved.albumId);
+    const track = album?.tracks?.[saved.trackIndex];
+    if (track) renderResumePrompt(track, saved);
+  }
+
   updateNowPlaying();
   updatePlayButton();
+}
+
+/** Small dismissible card offering to resume the previous session. */
+function renderResumePrompt(track, saved) {
+  const existing = document.getElementById("resume-prompt");
+  if (existing) existing.remove();
+
+  const card = document.createElement("div");
+  card.id = "resume-prompt";
+  card.className = "resume-prompt";
+  card.innerHTML = `
+    <p class="resume-text">
+      Resume <strong>${escapeHtml(track.title)}</strong>
+      at ${escapeHtml(formatTime(saved.position))}?
+    </p>
+    <div class="resume-actions">
+      <button type="button" class="ctrl ctrl-text" data-resume-yes>Resume</button>
+      <button type="button" class="ctrl ctrl-text" data-resume-no>Not now</button>
+    </div>
+  `;
+
+  card.addEventListener("click", async (event) => {
+    if (event.target.closest("[data-resume-yes]")) {
+      await playTrack(saved.albumId, saved.trackIndex, { autoplay: false });
+      const applyPosition = () => {
+        audio.currentTime = saved.position;
+        updateProgress();
+      };
+      if (audio.readyState >= 1) applyPosition();
+      else audio.addEventListener("loadedmetadata", applyPosition, { once: true });
+      try {
+        await audio.play();
+      } catch {
+        // Ignore autoplay blocking; the listener can press play.
+      }
+    }
+    removeValue(LAST_TRACK_KEY);
+    removeValue(POSITION_KEY);
+    card.remove();
+  });
+
+  document.body.appendChild(card);
 }
 
 init();
