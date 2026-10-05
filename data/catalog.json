@@ -5,13 +5,14 @@
       "title": "Broken Thoughts",
       "artist": "Brian J. Smith",
       "year": 2025,
-      "cover": "./Albums/Broken Thoughts/Album.png",
+      "cover": "/Albums/Broken Thoughts/Album.png",
       "tracks": [
         {
           "id": "broken-thoughts-01",
           "title": "Concrete Veins (Techno-Mix)",
           "duration": 218,
           "src": "./Albums/Broken Thoughts/Brian Smith - Concrete Veins (Techno-Mix).mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -19,6 +20,7 @@
           "title": "Concrete Veins",
           "duration": 303,
           "src": "./Albums/Broken Thoughts/Brian Smith - Concrete Veins.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -26,6 +28,7 @@
           "title": "Deep (Reviled)",
           "duration": 286,
           "src": "./Albums/Broken Thoughts/Brian Smith - Deep (Reviled).mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -33,6 +36,7 @@
           "title": "Deep",
           "duration": 281,
           "src": "./Albums/Broken Thoughts/Brian Smith - Deep.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -40,6 +44,7 @@
           "title": "Echoes",
           "duration": 286,
           "src": "./Albums/Broken Thoughts/Brian Smith - Echoes.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -47,6 +52,7 @@
           "title": "Endless",
           "duration": 270,
           "src": "./Albums/Broken Thoughts/Brian Smith - Endless.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -54,6 +60,7 @@
           "title": "Listless",
           "duration": 266,
           "src": "./Albums/Broken Thoughts/Brian Smith - Listless.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -61,6 +68,7 @@
           "title": "Marque (Reforged)",
           "duration": 428,
           "src": "./Albums/Broken Thoughts/Brian Smith - Marque (Reforged).mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -68,6 +76,7 @@
           "title": "Nothing",
           "duration": 270,
           "src": "./Albums/Broken Thoughts/Brian Smith - Nothing.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -75,6 +84,7 @@
           "title": "The Unseen Control (Lust & Need)",
           "duration": 265,
           "src": "./Albums/Broken Thoughts/Brian Smith - The Unseen Control (Lust & Need).mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -82,6 +92,7 @@
           "title": "Truth or Lies",
           "duration": 236,
           "src": "./Albums/Broken Thoughts/Brian Smith - Truth or Lies.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         }
       ]
@@ -91,13 +102,14 @@
       "title": "Dreams Realized",
       "artist": "Brian J. Smith",
       "year": 2025,
-      "cover": "./Albums/Dreams Realized/Dreams Realized.jpg",
+      "cover": "/Albums/Dreams Realized/Dreams Realized.jpg",
       "tracks": [
         {
           "id": "dreams-realized-01",
           "title": "Autumn Leaves",
           "duration": 209,
           "src": "./Albums/Dreams Realized/Brian Smith - Autumn Leaves.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -105,6 +117,7 @@
           "title": "Billionaire's Bane",
           "duration": 254,
           "src": "./Albums/Dreams Realized/Brian Smith - Billionaire's Bane.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -112,6 +125,7 @@
           "title": "Day's Remembered",
           "duration": 204,
           "src": "./Albums/Dreams Realized/Brian Smith - Day's Remembered.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -119,6 +133,7 @@
           "title": "Dreams",
           "duration": 297,
           "src": "./Albums/Dreams Realized/Brian Smith - Dreams.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -126,6 +141,7 @@
           "title": "Empty Hands",
           "duration": 248,
           "src": "./Albums/Dreams Realized/Brian Smith - Empty Hands.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -133,6 +149,7 @@
           "title": "Fallen & Broken",
           "duration": 332,
           "src": "./Albums/Dreams Realized/Brian Smith - Fallen & Broken.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -140,6 +157,7 @@
           "title": "It Seems (I Dream)",
           "duration": 334,
           "src": "./Albums/Dreams Realized/Brian Smith - It Seems (I Dream).mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -147,6 +165,7 @@
           "title": "Lost Love",
           "duration": 205,
           "src": "./Albums/Dreams Realized/Brian Smith - Lost Love.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -154,6 +173,7 @@
           "title": "Metal Minded Man",
           "duration": 266,
           "src": "./Albums/Dreams Realized/Brian Smith - Metal Minded Man.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -161,6 +181,7 @@
           "title": "Metal Minded Woman",
           "duration": 278,
           "src": "./Albums/Dreams Realized/Brian Smith - Metal Minded Woman.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -168,6 +189,7 @@
           "title": "Of Sorrow",
           "duration": 205,
           "src": "./Albums/Dreams Realized/Brian Smith - Of Sorrow.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -175,6 +197,7 @@
           "title": "Ravens Wings",
           "duration": 287,
           "src": "./Albums/Dreams Realized/Brian Smith - Ravens Wings.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -182,6 +205,7 @@
           "title": "Runaway",
           "duration": 202,
           "src": "./Albums/Dreams Realized/Brian Smith - Runaway.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -189,6 +213,7 @@
           "title": "Sad Is",
           "duration": 182,
           "src": "./Albums/Dreams Realized/Brian Smith - Sad Is.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -196,6 +221,7 @@
           "title": "Seen",
           "duration": 277,
           "src": "./Albums/Dreams Realized/Brian Smith - Seen.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -203,6 +229,7 @@
           "title": "Shattered Soul",
           "duration": 308,
           "src": "./Albums/Dreams Realized/Brian Smith - Shattered Soul.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -210,6 +237,7 @@
           "title": "She's So Divine",
           "duration": 196,
           "src": "./Albums/Dreams Realized/Brian Smith - She's So Divine.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -217,6 +245,7 @@
           "title": "This Ground Holds",
           "duration": 264,
           "src": "./Albums/Dreams Realized/Brian Smith - This Ground Holds.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -224,6 +253,7 @@
           "title": "Together",
           "duration": 239,
           "src": "./Albums/Dreams Realized/Brian Smith - Together.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         }
       ]
@@ -233,13 +263,14 @@
       "title": "Misc. Song",
       "artist": "Brian J. Smith",
       "year": 2025,
-      "cover": "./Albums/Misc. Song/cover.jpg",
+      "cover": "/Albums/Misc. Song/cover.jpg",
       "tracks": [
         {
           "id": "misc-song-01",
           "title": "Electric Night Run",
           "duration": 243,
           "src": "./Albums/Misc. Song/Brian Smith - Electric Night Run.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -247,6 +278,7 @@
           "title": "Love Afterlife",
           "duration": 208,
           "src": "./Albums/Misc. Song/Brian Smith - Love Afterlife.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -254,6 +286,7 @@
           "title": "Neon Pulse Rising",
           "duration": 253,
           "src": "./Albums/Misc. Song/Brian Smith - Neon Pulse Rising.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -261,6 +294,7 @@
           "title": "Runaway (Techno)",
           "duration": 204,
           "src": "./Albums/Misc. Song/Brian Smith - Runaway (Techno).mp3",
+          "lyricsFile": "",
           "lyrics": ""
         }
       ]
@@ -270,7 +304,7 @@
       "title": "The Last Of Me",
       "artist": "Brian J. Smith",
       "year": 2026,
-      "cover": "./Albums/The Last Of Me/The Last Of Me.png",
+      "cover": "/Albums/The Last Of Me/The Last Of Me.png",
       "tracks": [
         {
           "id": "the-last-of-me-01",
@@ -285,6 +319,7 @@
           "title": "Blue-Eyed Angel",
           "duration": 232,
           "src": "./Albums/The Last Of Me/Brian Smith - Blue-Eyed Angel.mp3",
+          "lyricsFile": "/Albums/lyrics/Brian Smith - Blue-Eyed Angel.lrc",
           "lyrics": ""
         },
         {
@@ -300,6 +335,7 @@
           "title": "Horrid Shadow",
           "duration": 329,
           "src": "./Albums/The Last Of Me/Brian Smith - Horrid Shadow.mp3",
+          "lyricsFile": "/Albums/lyrics/Brian Smith - Horrid Shadow.lrc",
           "lyrics": ""
         },
         {
@@ -307,6 +343,7 @@
           "title": "Morbid Thoughts (Downtrodden)",
           "duration": 250,
           "src": "./Albums/The Last Of Me/Brian Smith - Morbid Thoughts (Downtrodden).mp3",
+          "lyricsFile": "/Albums/lyrics/Brian Smith - Morbid Thoughts (Downtrodden).lrc",
           "lyrics": ""
         },
         {
@@ -314,6 +351,7 @@
           "title": "Ridge of the Rising Son",
           "duration": 258,
           "src": "./Albums/The Last Of Me/Brian Smith - Ridge of the Rising Son.mp3",
+          "lyricsFile": "/Albums/lyrics/Brian Smith - Ridge of the Rising Son.lrc",
           "lyrics": ""
         },
         {
@@ -321,6 +359,7 @@
           "title": "Static in My Veins",
           "duration": 341,
           "src": "./Albums/The Last Of Me/Brian Smith - Static in My Veins.mp3",
+          "lyricsFile": "/Albums/lyrics/Brian Smith - Static in My Veins.lrc",
           "lyrics": ""
         },
         {
@@ -328,6 +367,7 @@
           "title": "Still Here",
           "duration": 222,
           "src": "./Albums/The Last Of Me/Brian Smith - Still Here.mp3",
+          "lyricsFile": "/Albums/lyrics/Brian Smith - Still Here.lrc",
           "lyrics": ""
         },
         {
@@ -335,6 +375,7 @@
           "title": "The Gutter’s Edge",
           "duration": 319,
           "src": "./Albums/The Last Of Me/Brian Smith - The Gutter’s Edge.mp3",
+          "lyricsFile": "/Albums/lyrics/Brian Smith - The Gutter’s Edge.lrc",
           "lyrics": ""
         },
         {
@@ -350,6 +391,7 @@
           "title": "These Stone Walls",
           "duration": 211,
           "src": "./Albums/The Last Of Me/Brian Smith - These Stone Walls.mp3",
+          "lyricsFile": "/Albums/lyrics/Brian Smith - These Stone Walls.lrc",
           "lyrics": ""
         },
         {
@@ -357,6 +399,7 @@
           "title": "This Ground Holds (Revised)",
           "duration": 253,
           "src": "./Albums/The Last Of Me/Brian Smith - This Ground Holds (Revised).mp3",
+          "lyricsFile": "/Albums/lyrics/Brian Smith - This Ground Holds (Revised).lrc",
           "lyrics": ""
         },
         {
@@ -364,6 +407,7 @@
           "title": "Truth or Lies (Realized)",
           "duration": 283,
           "src": "./Albums/The Last Of Me/Brian Smith - Truth or Lies (Realized).mp3",
+          "lyricsFile": "/Albums/lyrics/Brian Smith - Truth or Lies (Realized).lrc",
           "lyrics": ""
         },
         {
@@ -371,6 +415,7 @@
           "title": "Voltage of the Unbroken",
           "duration": 192,
           "src": "./Albums/The Last Of Me/Brian Smith - Voltage of the Unbroken.mp3",
+          "lyricsFile": "/Albums/lyrics/Brian Smith - Voltage of the Unbroken.lrc",
           "lyrics": ""
         },
         {
@@ -378,6 +423,7 @@
           "title": "What of Me (Realized)",
           "duration": 299,
           "src": "./Albums/The Last Of Me/Brian Smith - What of Me (Realized).mp3",
+          "lyricsFile": "/Albums/lyrics/Brian Smith - What of Me (Realized).lrc",
           "lyrics": ""
         },
         {
@@ -385,6 +431,7 @@
           "title": "Who'll Remember Me",
           "duration": 239,
           "src": "./Albums/The Last Of Me/Brian Smith - Who'll Remember Me.mp3",
+          "lyricsFile": "/Albums/lyrics/Brian Smith - Who'll Remember Me.lrc",
           "lyrics": ""
         }
       ]
@@ -394,13 +441,14 @@
       "title": "Thoughts Distilled",
       "artist": "Brian J. Smith",
       "year": 2025,
-      "cover": "./Albums/Thoughts Distilled/Album.png",
+      "cover": "/Albums/Thoughts Distilled/Album.png",
       "tracks": [
         {
           "id": "thoughts-distilled-01",
           "title": "Broken Eternal",
           "duration": 220,
           "src": "./Albums/Thoughts Distilled/Brian Smith - Broken Eternal.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -408,6 +456,7 @@
           "title": "Broken Man",
           "duration": 245,
           "src": "./Albums/Thoughts Distilled/Brian Smith - Broken Man.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -415,6 +464,7 @@
           "title": "Chosen One",
           "duration": 215,
           "src": "./Albums/Thoughts Distilled/Brian Smith - Chosen One.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -422,6 +472,7 @@
           "title": "Deceptions of Justice",
           "duration": 339,
           "src": "./Albums/Thoughts Distilled/Brian Smith - Deceptions of Justice.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -429,6 +480,7 @@
           "title": "Duty and Faith",
           "duration": 202,
           "src": "./Albums/Thoughts Distilled/Brian Smith - Duty and Faith.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -436,6 +488,7 @@
           "title": "Everlasting",
           "duration": 229,
           "src": "./Albums/Thoughts Distilled/Brian Smith - Everlasting.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -443,6 +496,7 @@
           "title": "Ghosts in My Mind",
           "duration": 212,
           "src": "./Albums/Thoughts Distilled/Brian Smith - Ghosts in My Mind.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -450,6 +504,7 @@
           "title": "I've Been Broken",
           "duration": 223,
           "src": "./Albums/Thoughts Distilled/Brian Smith - I've Been Broken.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -457,6 +512,7 @@
           "title": "Inside (Forged)",
           "duration": 191,
           "src": "./Albums/Thoughts Distilled/Brian Smith - Inside (Forged).mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -464,6 +520,7 @@
           "title": "Into the Abyss",
           "duration": 186,
           "src": "./Albums/Thoughts Distilled/Brian Smith - Into the Abyss.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -471,6 +528,7 @@
           "title": "Lies",
           "duration": 164,
           "src": "./Albums/Thoughts Distilled/Brian Smith - Lies.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -478,6 +536,7 @@
           "title": "Morbid Thoughts",
           "duration": 290,
           "src": "./Albums/Thoughts Distilled/Brian Smith - Morbid Thoughts.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -485,6 +544,7 @@
           "title": "Pit",
           "duration": 158,
           "src": "./Albums/Thoughts Distilled/Brian Smith - Pit.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -492,6 +552,7 @@
           "title": "Ravens Wings",
           "duration": 207,
           "src": "./Albums/Thoughts Distilled/Brian Smith - Ravens Wings.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -499,6 +560,7 @@
           "title": "These Prison Walls",
           "duration": 302,
           "src": "./Albums/Thoughts Distilled/Brian Smith - These Prison Walls.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         },
         {
@@ -506,6 +568,7 @@
           "title": "What Of Me",
           "duration": 182,
           "src": "./Albums/Thoughts Distilled/Brian Smith - What Of Me.mp3",
+          "lyricsFile": "",
           "lyrics": ""
         }
       ]

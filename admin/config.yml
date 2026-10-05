@@ -8,21 +8,21 @@ backend:
 
 site_url: https://tyraxiss.github.io
 display_url: https://tyraxiss.github.io
-logo_url: https://tyraxiss.github.io/Albums/Broken%20Thoughts/Album.png
+logo:
+  src: https://tyraxiss.github.io/Albums/Broken%20Thoughts/Album.png
+  show_in_header: true
 
 # Paths in the repo vs URLs written into content
 media_folder: Albums
 public_folder: /Albums
-
-local_backend: true
 
 collections:
   - name: albums
     label: Albums
     label_singular: Album
     description: >
-      Open one album at a time. Edit its cover, tracks, and lyrics, then publish.
-      New albums appear on the public site after GitHub Pages updates.
+      Manage your album details, audio and synchronized lyrics. Changes go live
+      on the public site after you publish and GitHub Pages finishes updating.
     folder: data/albums
     extension: json
     format: json
@@ -61,10 +61,12 @@ collections:
       - label: Tracks
         name: tracks
         widget: list
+        label_singular: Track
         summary: "{{title}}"
+        collapsed: auto
         minimize_collapsed: true
         add_to_top: false
-        hint: Drag to reorder. Expand a track to edit audio and lyrics.
+        hint: Tracks already appear in album order. Expand a track to update its audio or lyrics.
         fields:
           - label: Track ID
             name: id
@@ -84,18 +86,21 @@ collections:
             widget: file
             choose_url: false
             hint: MP3 for this track
-          - label: Lyrics file (.lrc / .vtt)
+          - label: Timed lyrics file (.lrc or .vtt)
             name: lyricsFile
             widget: file
             required: false
             choose_url: false
-            media_folder: /Albums/lyrics
-            public_folder: /Albums/lyrics
-            hint: Upload a premade .lrc or .vtt. This overrides Lyrics text when set.
-          - label: Lyrics text
+            accept: .lrc,.vtt
+            media_folder: "/Albums/lyrics"
+            public_folder: "/Albums/lyrics"
+            hint: >
+              Upload or select the matching song's timed lyrics. Use [0:12.34] words per line;
+              existing files are in Albums/lyrics. Test published files in the Lyrics & library tools page after publishing.
+          - label: Lyrics text (fallback)
             name: lyrics
             widget: text
             required: false
             hint: >
-              Paste all lyrics at once (one line per line).
-              Optional times: [0:12] Hello   or   12.5 | Hello
+              Optional plain-text lyrics for this song. Used only when no timed lyrics file is selected.
+              The Lyrics button in the public player displays both timed files and plain text.

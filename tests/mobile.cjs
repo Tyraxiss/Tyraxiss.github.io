@@ -16,6 +16,11 @@ const URL = process.argv[2] || "http://localhost:8765/";
 const EDGE =
   process.env.BROWSER_PATH ||
   "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe";
+const BROWSER_ARGS = [
+  "--autoplay-policy=no-user-gesture-required",
+  "--mute-audio",
+  ...(process.env.CI ? ["--no-sandbox", "--disable-setuid-sandbox"] : []),
+];
 
 // Real-world viewport sizes, shortest-first (worst case for vertical space).
 const DEVICES = [
@@ -75,7 +80,7 @@ async function main() {
   const browser = await puppeteer.launch({
     executablePath: fs.existsSync(EDGE) ? EDGE : undefined,
     headless: "new",
-    args: ["--autoplay-policy=no-user-gesture-required", "--mute-audio"],
+    args: BROWSER_ARGS,
   });
 
   for (const device of DEVICES) {
@@ -169,7 +174,7 @@ async function shots() {
   const browser = await puppeteer.launch({
     executablePath: fs.existsSync(EDGE) ? EDGE : undefined,
     headless: "new",
-    args: ["--autoplay-policy=no-user-gesture-required", "--mute-audio"],
+    args: BROWSER_ARGS,
   });
   for (const device of DEVICES.slice(0, 4)) {
     const page = await browser.newPage();

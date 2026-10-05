@@ -12,6 +12,8 @@ on:
       - "css/**"
       - "index.html"
       - "tests/**"
+      - "admin/**"
+      - "ADMIN.md"
       - ".github/workflows/sync-catalog.yml"
   workflow_dispatch:
 
@@ -37,8 +39,11 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Set up ffmpeg
-        uses: Federico/b1n-linux-ffmpeg@v1.1.1
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends --yes ffmpeg
+          ffprobe -version
 
       - name: Run pipeline tests
         run: |
@@ -88,6 +93,9 @@ jobs:
             sleep 1
           done
           curl -sf http://127.0.0.1:8765/index.html > /dev/null
+
+      - name: Audit linked lyrics and playback
+        run: node tests/admin-lyrics.cjs http://127.0.0.1:8765/
 
       - name: Audit mobile layout
         run: node tests/mobile.cjs http://127.0.0.1:8765/

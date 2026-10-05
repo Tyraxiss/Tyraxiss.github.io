@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Lyrics &amp; Library Tools · Brian J. Smith</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #182028;
+        --muted: #5c6a75;
+        --line: rgba(24, 32, 40, 0.12);
+        --accent: #0f5f63;
+        --paper: rgba(255, 255, 255, 0.82);
+        --display: "Instrument Serif", Georgia, serif;
+        --body: "Manrope", system-ui, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        color: var(--ink);
+        font-family: var(--body);
+        background:
+          radial-gradient(900px 520px at 8% 0%, rgba(176, 206, 214, 0.75), transparent 60%),
+          radial-gradient(800px 480px at 92% 8%, rgba(214, 198, 184, 0.45), transparent 55%),
+          linear-gradient(165deg, #e8eef2 0%, #f3f1ec 48%, #e4ebe8 100%);
+      }
+
+      main {
+        width: min(100% - 2rem, 900px);
+        margin: 0 auto;
+        padding: clamp(1rem, 4vw, 2.5rem) 0 3rem;
+      }
+
+      .header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--line);
+      }
+
+      h1,
+      h2 {
+        font-family: var(--display);
+        font-weight: 400;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.1rem, 6vw, 3.2rem);
+        line-height: 1;
+      }
+
+      .eyebrow {
+        margin: 0 0 0.45rem;
+        color: var(--muted);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+      }
+
+      .header nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.9rem;
+      }
+
+      a {
+        color: var(--accent);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .card {
+        margin-top: 1rem;
+        padding: clamp(1rem, 4vw, 1.5rem);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 18px;
+        background: var(--paper);
+        box-shadow: 0 14px 34px rgba(40, 55, 70, 0.08);
+        backdrop-filter: blur(10px);
+      }
+
+      .card h2 {
+        margin: 0;
+        font-size: 1.55rem;
+      }
+
+      .lede,
+      .guidance {
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.65;
+      }
+
+      .lede {
+        margin: 0.45rem 0 1rem;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      button,
+      .button-link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0.65rem 1.05rem;
+        border: 0;
+        border-radius: 999px;
+        background: var(--accent);
+        color: white;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .button-link:hover {
+        filter: brightness(1.12);
+        text-decoration: none;
+      }
+
+      button:hover:not(:disabled) {
+        filter: brightness(1.12);
+      }
+
+      button:disabled {
+        cursor: wait;
+        opacity: 0.65;
+      }
+
+      button:focus-visible,
+      a:focus-visible {
+        outline: 3px solid rgba(15, 95, 99, 0.35);
+        outline-offset: 3px;
+      }
+
+      #summary {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      #summary[data-state="success"] {
+        color: #176143;
+        font-weight: 700;
+      }
+
+      #summary[data-state="error"] {
+        color: #a42d29;
+        font-weight: 700;
+      }
+
+      #results {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+        gap: 0.6rem;
+        margin: 1rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      #results:empty {
+        display: none;
+      }
+
+      #results li {
+        min-width: 0;
+        padding: 0.7rem 0.8rem;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        font-size: 0.84rem;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+      }
+
+      #results li[data-state="error"] {
+        border-color: rgba(164, 45, 41, 0.28);
+        background: rgba(255, 239, 236, 0.72);
+        color: #852722;
+      }
+
+      #results li a {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.78rem;
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+        gap: 0.8rem;
+        margin: 1rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .steps li {
+        padding: 0.9rem;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        font-size: 0.88rem;
+        line-height: 1.55;
+      }
+
+      .steps strong {
+        display: block;
+        margin-bottom: 0.2rem;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="header">
+        <div>
+          <p class="eyebrow">Brian J. Smith · Library</p>
+          <h1>Lyrics &amp; library tools</h1>
+        </div>
+        <nav aria-label="Library navigation">
+          <a href="../">View player</a>
+          <a href="./">Open library editor</a>
+          <a href="../ADMIN.md">Setup help</a>
+        </nav>
+      </header>
+
+      <section class="card" id="open-editor" aria-labelledby="edit-title">
+        <h2 id="edit-title">Edit your albums</h2>
+        <p class="lede">Use the familiar GitHub-backed album editor to update tracks, choose existing lyrics, and publish changes.</p>
+        <div class="actions">
+          <a class="button-link" href="./">Open album editor</a>
+          <span class="guidance">Sign in with your GitHub access token, choose Albums, and expand the song you want to edit.</span>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="check-title">
+        <h2 id="check-title">Check the live lyrics</h2>
+        <p class="lede">
+          Test the currently published catalog—not unsaved editor drafts. This checks that every linked lyric file loads and has synchronized LRC lines or WebVTT cues.
+        </p>
+        <div class="actions">
+          <button id="check-lyrics" type="button">Check linked lyrics</button>
+          <p id="summary" role="status" aria-live="polite">Select “Check linked lyrics” to test the public player’s files.</p>
+        </div>
+        <ul id="results" aria-label="Linked lyrics checks"></ul>
+      </section>
+
+      <section class="card" id="editing-guide" aria-labelledby="guide-title">
+        <h2 id="guide-title">The reliable lyrics workflow</h2>
+        <p class="guidance">Changes are published through the existing GitHub-backed album editor. Keep the lyric file and its track linked in the album entry.</p>
+        <ol class="steps">
+          <li><strong>1. Select the file</strong>Open the album editor, choose The Last Of Me, expand a song, and select its matching <code>.lrc</code> or <code>.vtt</code> under Timed lyrics file.</li>
+          <li><strong>2. Keep lyrics tidy</strong>Leave Lyrics text empty when a timed file is attached. Each synchronized LRC line starts with a timestamp, e.g. <code>[00:12.34] words</code>.</li>
+          <li><strong>3. Publish the album</strong>Publish the album and wait for GitHub Pages to update the public catalog and lyric assets.</li>
+          <li><strong>4. Check the live site</strong>Return here and select Check linked lyrics; the report includes a direct link for each file that needs attention.</li>
+        </ol>
+        <p class="guidance">
+          <strong>Adding new songs:</strong> drop the audio into its album folder, add the track through the editor, then attach its timed lyric file. Lines must use timestamps such as <code>[00:12.34] words</code>. Existing reusable lyrics are in <code>Albums/lyrics/</code>.
+        </p>
+      </section>
+    </main>
+    <script>
+      (() => {
+        const button = document.getElementById("check-lyrics");
+        const summary = document.getElementById("summary");
+        const results = document.getElementById("results");
+        const siteRoot = new URL("../", window.location.href);
+        const lrcTimestamp = /^\s*\[((?:\d{1,2}:)?\d{1,2}:\d{2}(?:[.,]\d+)?)\]/;
+        const vttCue = /^\s*(?:\d{2}:)?\d{1,2}:\d{2}(?:[.,]\d+)?\s*-->\s*(?:\d{2}:)?\d{1,2}:\d{2}(?:[.,]\d+)?\s*$/gm;
+
+        function showReport(message, state, checks) {
+          summary.textContent = message;
+          summary.dataset.state = state;
+          results.replaceChildren();
+
+          for (const check of checks) {
+            const row = document.createElement("li");
+            row.dataset.state = check.ok ? "success" : "error";
+            row.append(document.createTextNode(`${check.ok ? "✓" : "✗"} ${check.track}: ${check.message}`));
+
+            if (check.url) {
+              const link = document.createElement("a");
+              link.href = check.url.href;
+              link.target = "_blank";
+              link.rel = "noopener noreferrer";
+              link.textContent = "Open lyric file";
+              row.append(link);
+            }
+            results.append(row);
+          }
+        }
+
+        button.addEventListener("click", async () => {
+          button.disabled = true;
+          summary.textContent = "Loading the published catalog and checking lyrics…";
+          summary.removeAttribute("data-state");
+          results.replaceChildren();
+
+          try {
+            const catalogUrl = new URL("data/catalog.json", siteRoot);
+            catalogUrl.searchParams.set("_lyrics_check", String(Date.now()));
+            const response = await fetch(catalogUrl, { cache: "no-store" });
+            if (!response.ok) throw new Error(`Catalog returned HTTP ${response.status}.`);
+
+            const catalog = await response.json();
+            const tracks = (Array.isArray(catalog.albums) ? catalog.albums : [])
+              .flatMap((album) => (Array.isArray(album.tracks) ? album.tracks : [])
+                .filter((track) => track.lyricsFile)
+                .map((track) => ({ album: album.title || album.id, track })));
+            if (!tracks.length) throw new Error("There are no linked lyrics files in the published catalog.");
+
+            const checks = await Promise.all(tracks.map(async ({ album, track }) => {
+              const title = `${album} · ${track.title || track.id}`;
+              let url;
+              try {
+                url = new URL(String(track.lyricsFile).replace(/^(?:\.\/|\/)+/, ""), siteRoot);
+                const directory = new URL("./", siteRoot);
+                if (url.origin !== siteRoot.origin || !url.pathname.startsWith(directory.pathname)) {
+                  throw new Error("lyrics path points outside this site");
+                }
+
+                const fileResponse = await fetch(url, { cache: "no-store" });
+                if (!fileResponse.ok) {
+                  return { track: title, url, ok: false, message: `file returned HTTP ${fileResponse.status}` };
+                }
+
+                const text = (await fileResponse.text()).replace(/^\uFEFF/, "");
+                const isVtt = /\.vtt$/i.test(url.pathname) || /^\s*WEBVTT\b/i.test(text);
+                const timedLines = isVtt
+                  ? (text.match(vttCue) || []).length
+                  : text.split(/\r?\n/).filter((line) => lrcTimestamp.test(line)).length;
+                if (!timedLines) {
+                  return { track: title, url, ok: false, message: isVtt ? "no timed WebVTT cues found" : "no timed LRC lines found; expected [00:12.34] lyric text" };
+                }
+                return { track: title, url, ok: true, message: `${timedLines} timed ${isVtt ? "cues" : "lines"}` };
+              } catch (error) {
+                return { track: title, url, ok: false, message: `could not check file (${error.message})` };
+              }
+            }));
+
+            const working = checks.filter((check) => check.ok).length;
+            const broken = checks.length - working;
+            showReport(
+              broken ? `${working} of ${checks.length} linked lyric files work; ${broken} need attention.` : `All ${working} linked lyric files loaded with timed lines.`,
+              broken ? "error" : "success",
+              checks
+            );
+          } catch (error) {
+            showReport(error.message || "Could not check lyrics files.", "error", []);
+          } finally {
+            button.disabled = false;
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

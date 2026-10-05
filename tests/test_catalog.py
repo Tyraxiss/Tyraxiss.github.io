@@ -6,6 +6,7 @@ Run: python tests/test_catalog.py
 from __future__ import annotations
 
 import json
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -81,6 +82,41 @@ def test_payload_sorting():
     )
 
 
+def test_lyrics_files_are_linked_and_usable():
+    """Every committed timed lyrics file must be linked to a real catalog track."""
+    catalog = read_json(ROOT / "data" / "catalog.json")
+    lyrics_root = ROOT / "Albums" / "lyrics"
+    linked_paths = {
+        str(track.get("lyricsFile", "")).replace("\\", "/").removeprefix("./").lstrip("/")
+        for album in catalog.get("albums", [])
+        for track in album.get("tracks", [])
+        if track.get("lyricsFile")
+    }
+
+    lyric_files = sorted(
+        path for path in lyrics_root.iterdir() if path.is_file() and path.suffix.lower() in {".lrc", ".vtt"}
+    )
+    check("timed lyrics files exist", len(lyric_files) > 0, True)
+
+    for path in lyric_files:
+        relative = path.relative_to(ROOT).as_posix()
+        check(f"{path.name} is linked to a track", relative in linked_paths, True)
+
+        text = path.read_text(encoding="utf-8-sig")
+        if path.suffix.lower() == ".lrc":
+            lines = [line for line in text.splitlines() if line.strip()]
+            check(f"{path.name} has lyrics", bool(lines), True)
+            valid = re.compile(r"^\s*\[\d{1,2}:\d{2}(?:[.,]\d+)?\]")
+            check(f"{path.name} contains only timestamped lyric lines", all(valid.match(line) for line in lines), True)
+        else:
+            cue = re.compile(
+                r"^\s*(?:\d{2}:)?\d{1,2}:\d{2}(?:[.,]\d+)?\s*-->"
+                r"\s*(?:\d{2}:)?\d{1,2}:\d{2}(?:[.,]\d+)?",
+                re.MULTILINE,
+            )
+            check(f"{path.name} has timed cues", bool(cue.search(text)), True)
+
+
 def test_real_catalog_is_valid():
     """The shipped catalog must satisfy the invariants the player relies on."""
     catalog = read_json(ROOT / "data" / "catalog.json")
@@ -92,7 +128,11 @@ def test_real_catalog_is_valid():
         check(f"{album['id']} has id", bool(album.get("id")), True)
         check(f"{album['id']} has title", bool(album.get("title")), True)
         check(f"{album['id']} has cover", bool(album.get("cover")), True)
-        check(f"{album['id']} cover starts ./", album["cover"].startswith("./"), True)
+        check(
+            f"{album['id']} cover has a site-root path",
+            album["cover"].startswith(("./", "/")),
+            True,
+        )
 
         ids = [t["id"] for t in album["tracks"]]
         check(f"{album['id']} ids unique", len(ids) == len(set(ids)), True)
@@ -108,8 +148,8 @@ def test_real_catalog_is_valid():
             )
             if track.get("lyricsFile"):
                 check(
-                    f"{track['id']} lyricsFile starts ./",
-                    track["lyricsFile"].startswith("./"),
+                    f"{track['id']} lyricsFile has a site-root path",
+                    track["lyricsFile"].startswith(("./", "/")),
                     True,
                 )
 

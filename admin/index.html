@@ -146,6 +146,16 @@
       body > div:not(.admin-chrome) {
         min-height: 70vh;
       }
+
+      @media (max-width: 560px) {
+        .admin-chrome {
+          padding: 0.85rem 0.8rem 0.4rem;
+        }
+
+        .help-card {
+          padding: 0.9rem;
+        }
+      }
     </style>
   </head>
   <body>
@@ -157,24 +167,26 @@
         </div>
         <nav class="admin-links">
           <a href="../">View public site</a>
+          <a href="./lyrics-check.html">Lyrics &amp; tools</a>
           <a href="../ADMIN.md">Setup notes</a>
         </nav>
       </header>
 
       <section class="help-card">
-        <h2>How to edit your library</h2>
+        <h2>Sign-in and editing help</h2>
         <ol>
-          <li>Sign in with a <strong>GitHub token</strong> (not “Sign in with GitHub”, unless OAuth is set up).</li>
-          <li>Open <strong>Albums</strong>, then click one album — you edit one album at a time.</li>
-          <li>Expand a track to change audio, paste lyrics, or upload a <strong>.lrc / .vtt</strong> file.</li>
-          <li>Click <strong>Publish</strong>. Wait a minute for GitHub Pages, then refresh the public site.</li>
+          <li>Sign in with a <strong>GitHub token</strong> (not “Sign in with GitHub,” unless OAuth is configured).</li>
+          <li>Open <strong>Albums</strong>, choose the album, and expand the track you want to edit.</li>
+          <li>Select the matching existing file in <strong>Timed lyrics file (.lrc or .vtt)</strong>. Files already live under <strong>Albums/lyrics/</strong>; choose one instead of uploading a duplicate.</li>
+          <li>For a new song, drop its <strong>.lrc or .vtt</strong> file onto the lyrics field. Use timestamps like <code>[00:12.34] Hello there</code> for synchronized karaoke.</li>
+          <li>Publish your album, wait for GitHub Pages to update, then <a href="./lyrics-check.html">check the live lyrics</a>.</li>
         </ol>
         <details>
-          <summary>Lyrics tips</summary>
+          <summary>Plain lyrics, sign-in and troubleshooting</summary>
           <p class="tip">
-            Prefer uploading a premade <strong>.lrc</strong> or <strong>.vtt</strong> file.
-            Or paste all lines into Lyrics text — one line per lyric.
-            Timed example: <code>[0:12] Hello there</code>
+            Leave “Lyrics text” empty if the song uses a timed file. For unsynchronized lyrics, paste plain text there instead.
+            Use “Sign In with Token” and a repository-limited GitHub access token with Contents read/write and Metadata read permissions.
+            If a file is missing from the published checker, reopen the album and select the matching existing lyrics asset before publishing again.
           </p>
         </details>
       </section>

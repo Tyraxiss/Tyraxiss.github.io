@@ -75,18 +75,18 @@ Commit and push, wait for Pages to update, then open `/admin/` and use **Login w
 
 ---
 
-## Adding lyrics / songs after login
+## Editing tracks and lyrics
 
-1. Open `/admin/` and sign in
-2. Open **Albums** and click **one album** (each album is its own entry)
-3. Expand a track
-4. Add lyrics either by:
-   - **Lyrics file:** upload a premade `.lrc` or `.vtt`
-   - **Lyrics text:** paste plain / timed lyrics into the text box
-5. **Publish** — CMS saves that album file; a GitHub Action rebuilds `data/catalog.json` for the public player
-6. Wait a minute for Pages, then refresh the public site
+1. Open `/admin/` and sign in, then open **Albums** and select the album you want to edit.
+2. Expand the song. Use **Timed lyrics file (.lrc or .vtt)** to select its existing file from `Albums/lyrics/`. The upload picker is filtered to lyric files; avoid uploading a duplicate when its file already exists.
+3. For a new synced file, upload its `.lrc` or `.vtt`; LRC lines must start with a timestamp such as `[00:12.34] words`. Keep **Lyrics text (fallback)** empty while a timed file is attached.
+4. For unsynchronized lyrics, leave the file field empty and paste plain lyrics into **Lyrics text (fallback)**.
+5. Click **Publish**. A GitHub Action rebuilds `data/catalog.json`; wait for GitHub Pages to update.
+6. Open [`/admin/lyrics-check.html`](https://tyraxiss.github.io/admin/lyrics-check.html) and run **Check linked lyrics**. The checker fetches the published catalog and every linked file and reports broken paths, inaccessible assets or missing timestamps with links to each file.
 
-Uploaded lyric files are stored under `Albums/lyrics/`. A lyrics file overrides the text box when both are set.
+The check runs against the **published live files**, not unsaved drafts. If a path fails, return to the album entry, choose the matching existing lyrics asset, publish, and wait for Pages again. The public player prefers `lyricsFile` over the fallback text.
+
+Uploaded lyric files are stored under `Albums/lyrics/`. For a new song, add the audio/track and set its matching `lyricsFile` before publishing; uploading a lyric alone does not attach it to a track.
 
 ---
 
