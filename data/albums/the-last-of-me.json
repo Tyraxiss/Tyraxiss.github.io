@@ -34,7 +34,7 @@
       "title": "Horrid Shadow",
       "duration": 329,
       "src": "./Albums/The Last Of Me/Brian Smith - Horrid Shadow.mp3",
-      "lyricsFile": "",
+      "lyricsFile": "/Albums/lyrics/Brian Smith - Horrid Shadow.lrc",
       "lyrics": ""
     },
     {
@@ -42,7 +42,7 @@
       "title": "Morbid Thoughts (Downtrodden)",
       "duration": 250,
       "src": "./Albums/The Last Of Me/Brian Smith - Morbid Thoughts (Downtrodden).mp3",
-      "lyricsFile": "",
+      "lyricsFile": "/Albums/lyrics/Brian Smith - Morbid Thoughts (Downtrodden).lrc",
       "lyrics": ""
     },
     {
@@ -50,7 +50,7 @@
       "title": "Ridge of the Rising Son",
       "duration": 258,
       "src": "./Albums/The Last Of Me/Brian Smith - Ridge of the Rising Son.mp3",
-      "lyricsFile": "",
+      "lyricsFile": "/Albums/lyrics/Brian Smith - Ridge of the Rising Son.lrc",
       "lyrics": ""
     },
     {
