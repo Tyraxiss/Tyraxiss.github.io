@@ -1,0 +1,15 @@
+{
+  "name": "brian-j-smith-albums",
+  "private": true,
+  "description": "Static album player, library tools and test suites for Tyraxiss.github.io",
+  "scripts": {
+    "test:js": "node tests/app-logic.test.js",
+    "test:py": "python tests/test_catalog.py && python tests/test_validate.py",
+    "serve": "python -m http.server 8765",
+    "test:browser": "node tests/admin-lyrics.cjs http://127.0.0.1:8765/ && node tests/smoke.cjs http://127.0.0.1:8765/ && node tests/mobile.cjs http://127.0.0.1:8765/",
+    "test": "npm run test:py && npm run test:js"
+  },
+  "devDependencies": {
+    "puppeteer": "25.13.0"
+  }
+}

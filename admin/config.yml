@@ -86,17 +86,21 @@ collections:
             widget: file
             choose_url: false
             hint: MP3 for this track
-          - label: Timed lyrics file (.lrc or .vtt)
+          - label: Timed lyrics file (.lrc, enhanced .lrc, .vtt or .srt)
             name: lyricsFile
             widget: file
             required: false
             choose_url: false
-            accept: .lrc,.vtt
+            accept: .lrc,.vtt,.srt
             media_folder: "/Albums/lyrics"
             public_folder: "/Albums/lyrics"
             hint: >
-              Upload or select the matching song's timed lyrics. Use [0:12.34] words per line;
-              existing files are in Albums/lyrics. Test published files in the Lyrics & library tools page after publishing.
+              Upload or select the matching song's timed lyrics. Line-timed LRC
+              ([00:12.34] words), enhanced LRC word tags
+              ([00:12.34]<00:12.50>word), WebVTT cues and SRT all work - word
+              tags power word-by-word karaoke. Existing files are in
+              Albums/lyrics. Preview a file on the Lyrics & library tools page
+              before publishing, then re-check it there after publishing.
           - label: Lyrics text (fallback)
             name: lyrics
             widget: text

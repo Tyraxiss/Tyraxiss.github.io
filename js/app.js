@@ -1,3 +1,5 @@
+import { normalizeLyrics, parseLyricsFile } from "./lyrics.js";
+
 const CATALOG_URL = "./data/catalog.json";
 const THEME_KEY = "bs-theme";
 const KARAOKE_KEY = "bs-karaoke";
@@ -502,153 +504,6 @@ function parseHash() {
 
 const lyricsCache = new Map();
 
-function parseLyricTimeToken(token) {
-  const raw = String(token ?? "").trim().replace(",", ".");
-  if (!raw) return null;
-
-  const parts = raw.split(":");
-  if (parts.length === 3) {
-    const hours = Number(parts[0]);
-    const minutes = Number(parts[1]);
-    const seconds = Number(parts[2]);
-    if (![hours, minutes, seconds].every(Number.isFinite)) return null;
-    return hours * 3600 + minutes * 60 + seconds;
-  }
-
-  if (parts.length === 2) {
-    const minutes = Number(parts[0]);
-    const seconds = Number(parts[1]);
-    if (!Number.isFinite(minutes) || !Number.isFinite(seconds)) return null;
-    return minutes * 60 + seconds;
-  }
-
-  const seconds = Number(raw);
-  return Number.isFinite(seconds) ? seconds : null;
-}
-
-function parseLyricLine(line) {
-  const text = String(line ?? "").trim();
-  if (!text) return null;
-
-  // [0:12.5] Lyric text   or   [12.5] Lyric text
-  const bracket = text.match(/^\[([^\]]+)\]\s*(.*)$/);
-  if (bracket) {
-    const time = parseLyricTimeToken(bracket[1]);
-    const body = bracket[2].trim();
-    if (body) return { time, text: body };
-  }
-
-  // 12.5 | Lyric text   or   0:12 | Lyric text
-  const pipe = text.match(/^([^|]+)\|\s*(.+)$/);
-  if (pipe) {
-    const time = parseLyricTimeToken(pipe[1]);
-    if (time != null) return { time, text: pipe[2].trim() };
-  }
-
-  return { time: null, text };
-}
-
-function parseLrc(text) {
-  const lines = [];
-
-  for (const rawLine of String(text).split(/\r?\n/)) {
-    const line = rawLine.trim();
-    if (!line) continue;
-
-    // Skip metadata tags like [ti:], [ar:], [offset:]
-    if (/^\[[a-zA-Z]/.test(line)) continue;
-
-    const times = [];
-    let rest = line;
-    let match = rest.match(/^\[([^\]]+)\]/);
-    while (match) {
-      const time = parseLyricTimeToken(match[1]);
-      if (time != null) times.push(time);
-      rest = rest.slice(match[0].length).trimStart();
-      match = rest.match(/^\[([^\]]+)\]/);
-    }
-
-    const body = rest.trim();
-    if (!body) continue;
-
-    if (times.length) {
-      for (const time of times) lines.push({ time, text: body });
-    } else {
-      lines.push({ time: null, text: body });
-    }
-  }
-
-  return lines.sort((a, b) => (a.time ?? 0) - (b.time ?? 0));
-}
-
-function parseVtt(text) {
-  const cleaned = String(text)
-    .replace(/^\uFEFF/, "")
-    .replace(/^WEBVTT[^\n]*\n?/i, "");
-  const blocks = cleaned.split(/\n\s*\n/);
-  const lines = [];
-
-  for (const block of blocks) {
-    const parts = block
-      .split(/\r?\n/)
-      .map((part) => part.trim())
-      .filter(Boolean);
-    if (!parts.length || parts[0].startsWith("NOTE")) continue;
-
-    let timingIndex = 0;
-    if (parts[0] && !parts[0].includes("-->")) timingIndex = 1;
-    const timing = parts[timingIndex];
-    if (!timing || !timing.includes("-->")) continue;
-
-    const startToken = timing.split("-->")[0].trim().split(/\s+/)[0];
-    const time = parseLyricTimeToken(startToken);
-    const cueText = parts
-      .slice(timingIndex + 1)
-      .join("\n")
-      .replace(/<\/?[^>]+>/g, "")
-      .trim();
-
-    for (const cueLine of cueText.split(/\r?\n/)) {
-      const body = cueLine.trim();
-      if (body) lines.push({ time, text: body });
-    }
-  }
-
-  return lines;
-}
-
-function normalizeLyrics(lyrics) {
-  if (!lyrics) return [];
-
-  // CMS text field: one big multiline string (also accepts pasted LRC)
-  if (typeof lyrics === "string") {
-    const trimmed = lyrics.trim();
-    if (!trimmed) return [];
-    if (/^\s*WEBVTT/i.test(trimmed)) return parseVtt(trimmed);
-    // Timed LRC only — avoid treating [Chorus]/[Verse] headers as LRC.
-    if (/\[\d{1,2}:\d{2}/.test(trimmed) || /\[\d+(?:\.\d+)?\]/.test(trimmed)) {
-      return parseLrc(trimmed);
-    }
-    return trimmed.split(/\r?\n/).map(parseLyricLine).filter(Boolean);
-  }
-
-  if (!Array.isArray(lyrics)) return [];
-
-  return lyrics
-    .map((line) => {
-      if (typeof line === "string") return parseLyricLine(line);
-      if (line && typeof line.text === "string") {
-        const time =
-          typeof line.time === "number" && Number.isFinite(line.time)
-            ? line.time
-            : null;
-        return { time, text: line.text.trim() };
-      }
-      return null;
-    })
-    .filter((line) => line && line.text);
-}
-
 async function resolveTrackLyrics(track, albumId = "", trackIndex = -1) {
   if (!track) return [];
 
@@ -666,11 +521,8 @@ async function resolveTrackLyrics(track, albumId = "", trackIndex = -1) {
         fileError = `Could not load lyrics file (${res.status})`;
       } else {
         const text = await res.text();
-        const name = String(track.lyricsFile).toLowerCase();
-        lines =
-          name.endsWith(".vtt") || /^\s*WEBVTT/i.test(text)
-            ? parseVtt(text)
-            : parseLrc(text);
+        // LRC, enhanced LRC, WebVTT and SRT - picked by extension or sniffed.
+        lines = parseLyricsFile(text, track.lyricsFile).lines;
         if (!lines.length) {
           fileError = "Lyrics file loaded, but no lines were found";
         }
@@ -687,7 +539,7 @@ async function resolveTrackLyrics(track, albumId = "", trackIndex = -1) {
   if (lines.length) lyricsCache.set(cacheKey, lines);
 
   if (!lines.length && fileError) {
-    return [{ time: null, text: fileError }];
+    return [{ time: null, text: fileError, words: null }];
   }
   return lines;
 }
@@ -699,7 +551,7 @@ function renderSidebar() {
       <button
         type="button"
         class="album-nav-btn${state.view === "album" && state.albumId === album.id ? " is-active" : ""}"
-        data-album-id="${album.id}"
+        data-album-id="${escapeAttr(album.id)}"
       >
         ${escapeHtml(album.title)}
       </button>`
@@ -752,7 +604,7 @@ function renderHome() {
           ? visible
               .map(
                 (album) => `
-        <button type="button" class="album-card" data-open-album="${album.id}">
+        <button type="button" class="album-card" data-open-album="${escapeAttr(album.id)}">
           <div class="album-card-art-wrap album-frame">
             <img src="${escapeAttr(assetUrl(album.cover))}" alt="" loading="lazy" />
           </div>
@@ -1123,10 +975,18 @@ async function renderLyrics() {
 
   state.activeLyricIndex = -1;
   els.lyricsLines.innerHTML = lines
-    .map(
-      (line, i) =>
-        `<p class="lyric-line" data-lyric-index="${i}" data-time="${line.time ?? ""}"><span class="lyric-text">${escapeHtml(line.text)}</span></p>`
-    )
+    .map((line, i) => {
+      const hasWords = Array.isArray(line.words) && line.words.length > 0;
+      const body = hasWords
+        ? line.words
+            .map(
+              (word) =>
+                `<span class="lyric-word" data-time="${Number(word.time)}">${escapeHtml(word.text)}</span>`
+            )
+            .join("")
+        : escapeHtml(line.text);
+      return `<p class="lyric-line${hasWords ? " has-words" : ""}" data-lyric-index="${i}" data-time="${line.time ?? ""}"><span class="lyric-text">${body}</span></p>`;
+    })
     .join("");
   updateLyricsHighlight(audio.currentTime || 0);
 }
@@ -1155,15 +1015,55 @@ function updateLyricsHighlight(currentTime) {
   }
 
   const changed = active !== state.activeLyricIndex;
+  const previous = state.activeLyricIndex;
   state.activeLyricIndex = active;
   const karaokeOn = state.karaokeEnabled;
 
+  // Line-level progress: drives the gradient on lines without word timings.
   const start = times[active] ?? currentTime;
   let end = times[active + 1];
   if (typeof end !== "number" || !Number.isFinite(end) || end <= start) {
     end = start + 4;
   }
-  const progress = Math.min(1, Math.max(0, (currentTime - start) / (end - start)));
+  let progress = Math.min(1, Math.max(0, (currentTime - start) / (end - start)));
+
+  // Word-level progress: drives per-word colouring for enhanced LRC / WebVTT.
+  const activeNode = nodes[active];
+  const wordNodes = activeNode ? [...activeNode.querySelectorAll(".lyric-word")] : [];
+  if (wordNodes.length) {
+    const wordTimes = wordNodes.map((node) => Number(node.getAttribute("data-time")));
+    let activeWord = -1;
+    for (let i = 0; i < wordNodes.length; i += 1) {
+      if (Number.isFinite(wordTimes[i]) && wordTimes[i] <= currentTime) activeWord = i;
+    }
+
+    if (activeWord >= 0) {
+      const wordStart = wordTimes[activeWord];
+      const wordEnd = Number.isFinite(wordTimes[activeWord + 1])
+        ? wordTimes[activeWord + 1]
+        : wordStart + 1;
+      const fraction =
+        wordEnd > wordStart
+          ? Math.min(1, Math.max(0, (currentTime - wordStart) / (wordEnd - wordStart)))
+          : 1;
+      progress = (activeWord + fraction) / wordNodes.length;
+    } else {
+      progress = 0;
+    }
+
+    wordNodes.forEach((node, i) => {
+      node.classList.toggle("is-active", i === activeWord);
+      node.classList.toggle("is-past", i < activeWord);
+    });
+  }
+
+  // Drop word state left behind on the line we just scrolled away from.
+  if (changed && previous >= 0 && previous !== active && nodes[previous]) {
+    nodes[previous].querySelectorAll(".lyric-word").forEach((node) => {
+      node.classList.remove("is-active", "is-past");
+    });
+  }
+
   const progressPct = `${(progress * 100).toFixed(1)}%`;
 
   nodes.forEach((node, i) => {
@@ -1248,6 +1148,22 @@ function assetUrl(path) {
       })
       .join("/")
   );
+}
+
+/** True when the focused element lives inside a region that scrolls itself. */
+function insideScrollableRegion(node) {
+  let el = node instanceof Element ? node : node?.parentElement;
+  while (el) {
+    const style = window.getComputedStyle(el);
+    if (
+      (style.overflowY === "auto" || style.overflowY === "scroll") &&
+      el.scrollHeight > el.clientHeight + 1
+    ) {
+      return true;
+    }
+    el = el.parentElement;
+  }
+  return false;
 }
 
 function bindEvents() {
@@ -1361,6 +1277,12 @@ function bindEvents() {
     }
     if (typing || event.metaKey || event.altKey) return;
 
+    // Space must still activate a focused link or button natively.
+    const onControl =
+      target instanceof Element &&
+      target.closest("a, button, summary, [role=button]") !== null;
+    if (onControl && (event.key === " " || event.key === "Spacebar")) return;
+
     const current = getCurrentTrack();
     const hasTrack = Boolean(current);
 
@@ -1381,17 +1303,16 @@ function bindEvents() {
         else if (hasTrack) audio.currentTime = Math.max(0, audio.currentTime - 5);
         break;
       case "ArrowUp":
+      case "ArrowDown": {
+        // When focus sits inside scrollable content, arrows scroll it natively.
+        if (insideScrollableRegion(target)) break;
         event.preventDefault();
-        audio.volume = Math.min(1, audio.volume + 0.05);
+        const delta = event.key === "ArrowUp" ? 0.05 : -0.05;
+        audio.volume = Math.min(1, Math.max(0, audio.volume + delta));
         els.volume.value = String(audio.volume);
         saveVolume();
         break;
-      case "ArrowDown":
-        event.preventDefault();
-        audio.volume = Math.max(0, audio.volume - 0.05);
-        els.volume.value = String(audio.volume);
-        saveVolume();
-        break;
+      }
       case "s":
       case "S":
         toggleShuffle();
@@ -1508,7 +1429,7 @@ async function init() {
   bindSearch();
 
   try {
-    const res = await fetch(`${CATALOG_URL}?v=${Date.now()}`, { cache: "no-store" });
+    const res = await fetch(CATALOG_URL, { cache: "no-cache" });
     if (!res.ok) throw new Error(`Failed to load catalog (${res.status})`);
     const data = await res.json();
     state.albums = (Array.isArray(data.albums) ? data.albums : []).map((album) => ({

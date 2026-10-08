@@ -36,8 +36,13 @@ def split_catalog() -> None:
         print(f"Wrote {path.name}")
 
 
-def sync_catalog() -> bool:
-    """Merge data/albums/*.json into data/catalog.json. True when it changed."""
+def sync_catalog() -> None:
+    """Merge data/albums/*.json into data/catalog.json.
+
+    Returns nothing on purpose: main() maps a truthy return to a non-zero exit
+    code, so returning "changed" here used to make CI fail *because* it did
+    real work - and the commit step never ran.
+    """
     ALBUMS_DIR.mkdir(parents=True, exist_ok=True)
     album_files = sorted(ALBUMS_DIR.glob("*.json"), key=lambda p: p.stem.lower())
     albums = []
@@ -52,7 +57,6 @@ def sync_catalog() -> bool:
         print(f"Synced {len(albums)} albums -> catalog.json")
     else:
         print("catalog.json already up to date")
-    return changed
 
 
 COMMANDS = {
@@ -69,7 +73,8 @@ def main() -> int:
         print(f"Unknown command '{cmd}'. Use one of: {', '.join(COMMANDS)}")
         return 2
     result = handler()
-    return int(result) if isinstance(result, int) else 0
+    # Only handlers that return an int (validate) can fail the command.
+    return result if isinstance(result, int) else 0
 
 
 if __name__ == "__main__":

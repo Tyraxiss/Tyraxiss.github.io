@@ -97,9 +97,13 @@ Current state: **5 albums / 66 tracks, validator clean (0 errors).**
   home grid ("11 tracks · 2025") and the album hero, and searchable.
 - **`Misc. Song/cover.jpg` is 9 KB** vs 1.5–2.7 MB for the other covers, so it
   will look blurry in the grid. Needs a real replacement image.
-- **Lyrics: 1 of 66 tracks.** Only "Alive in the Static" has any. The karaoke
-  feature works but has almost nothing to show. This is content work, not code —
-  paste lyrics in the CMS or upload `.lrc` / `.vtt`.
+- **Lyrics: 16 of 66 tracks linked** (was 1). The karaoke feature works; the
+  rest is content work — paste lyrics in the CMS or add `.lrc` / enhanced `.lrc`
+  / `.vtt` / `.srt` files.
+- **Enhanced LRC support was missing.** Files with word-level `<00:14.004>` tags
+  used to print those tags on screen. `js/lyrics.js` now parses plain LRC,
+  enhanced LRC, WebVTT (incl. inline word stamps) and SRT, and karaoke highlights
+  word by word when timings exist.
 - **Repo size ~490 MB.** Deliberately left alone (decision: keep audio
   quality). GitHub warns at 1 GB and hard-blocks at 5 GB; there's room for
   roughly 4–5 more albums. Guidance is in `ADMIN.md`.

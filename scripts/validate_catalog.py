@@ -28,6 +28,7 @@ from catalog_lib import (
     normalize_src,
     probe_duration,
     read_json,
+    site_to_abs,
 )
 
 # Duration drift beyond this many seconds is reported.
@@ -37,8 +38,16 @@ DURATION_TOLERANCE = 2
 MIN_COVER_BYTES = 20_000
 
 
-def _abs(site_rel: str) -> Path:
-    return ROOT.joinpath(*str(site_rel).lstrip("./").split("/"))
+def _abs(site_rel: str):
+    """Absolute path for a site-relative value, or None when the value is unsafe.
+
+    Values come from JSON, so traversal attempts are rejected rather than
+    resolved (str.lstrip('./') used to mangle them silently).
+    """
+    try:
+        return site_to_abs(site_rel)
+    except ValueError:
+        return None
 
 
 def validate(catalog_path: Path = CATALOG_PATH, strict: bool = False) -> int:
@@ -73,14 +82,17 @@ def validate(catalog_path: Path = CATALOG_PATH, strict: bool = False) -> int:
 
         # ---- cover art ---------------------------------------------------
         cover = album.get("cover")
+        cover_path = _abs(cover) if cover else None
         if not cover:
             errors.append(f"[{album_id}] no cover set")
-        elif not _abs(cover).exists():
+        elif cover_path is None:
+            errors.append(f"[{album_id}] unsafe cover path: {cover}")
+        elif not cover_path.exists():
             errors.append(f"[{album_id}] cover not found: {cover}")
-        elif _abs(cover).stat().st_size < MIN_COVER_BYTES:
+        elif cover_path.stat().st_size < MIN_COVER_BYTES:
             warnings.append(
                 f"[{album_id}] cover art is tiny "
-                f"({_abs(cover).stat().st_size // 1024} KB): {cover}"
+                f"({cover_path.stat().st_size // 1024} KB): {cover}"
             )
 
         tracks = album.get("tracks") or []
@@ -111,7 +123,12 @@ def validate(catalog_path: Path = CATALOG_PATH, strict: bool = False) -> int:
                 errors.append(f"{label}: src used twice in this album")
             seen_srcs.add(src_key)
 
-            if not _abs(src).exists():
+            src_path = _abs(src)
+            if src_path is None:
+                errors.append(f"{label}: unsafe src path: {src}")
+                continue
+
+            if not src_path.exists():
                 errors.append(f"{label}: audio file missing: {src}")
                 continue
 
@@ -119,7 +136,7 @@ def validate(catalog_path: Path = CATALOG_PATH, strict: bool = False) -> int:
                 warnings.append(f"{label}: src should start with './': {src}")
 
             claimed = track.get("duration")
-            real = probe_duration(_abs(src))
+            real = probe_duration(src_path)
             if real is None:
                 warnings.append(f"{label}: could not read duration (ffprobe failed)")
             elif claimed is None:
@@ -132,7 +149,10 @@ def validate(catalog_path: Path = CATALOG_PATH, strict: bool = False) -> int:
             # ---- lyrics file ---------------------------------------------
             lyrics_file = track.get("lyricsFile")
             if lyrics_file:
-                if not _abs(lyrics_file).exists():
+                lyrics_path = _abs(lyrics_file)
+                if lyrics_path is None:
+                    errors.append(f"{label}: unsafe lyricsFile path: {lyrics_file}")
+                elif not lyrics_path.exists():
                     errors.append(f"{label}: lyricsFile not found: {lyrics_file}")
 
     # ---- audio on disk that is not in the catalog -----------------------
@@ -141,7 +161,8 @@ def validate(catalog_path: Path = CATALOG_PATH, strict: bool = False) -> int:
             key = normalize_src("./" + path.relative_to(ROOT).as_posix())
             if key not in referenced_srcs:
                 warnings.append(
-                    f"[{folder.name}] audio not in catalog: {path.name}"
+                    f"[{folder.name}] audio not in catalog: {path.name} "
+                    "(run python scripts/build_catalog.py)"
                 )
 
     for warning in warnings:

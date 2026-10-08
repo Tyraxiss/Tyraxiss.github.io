@@ -38,6 +38,12 @@ COVER_FALLBACK_EXTS = {".png", ".jpg", ".jpeg", ".webp"}
 
 ARTIST_DEFAULT = "Brian J. Smith"
 
+# Lyric uploads live next to the audio, in one folder.
+LYRICS_DIR = ALBUMS_ROOT / "lyrics"
+
+# Extensions the player can parse (LRC, enhanced LRC, WebVTT, SRT, plain).
+LYRICS_SUFFIXES = {".lrc", ".vtt", ".srt", ".txt"}
+
 
 def read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -62,6 +68,42 @@ def slugify(name: str) -> str:
 def site_path(path: Path) -> str:
     """Absolute path -> site-relative './Albums/...' string with forward slashes."""
     return "./" + path.relative_to(ROOT).as_posix()
+
+
+def normalize_site_path(value) -> str:
+    """Canonical site-relative spelling: './Albums/...' with forward slashes.
+
+    The CMS writes '/Albums/...' (its ``public_folder``) while hand-edited
+    files and the player use './Albums/...'. Generated catalog output always
+    uses one spelling, so a deploy under a sub-path behaves identically.
+    """
+    if not value:
+        return str(value or "")
+    text = str(value).replace("\\", "/").strip()
+    if text.startswith("MP3-Website/"):
+        text = text[len("MP3-Website/") :]
+    while text.startswith("./"):
+        text = text[2:]
+    text = text.lstrip("/")
+    parts = [part for part in text.split("/") if part not in ("", ".")]
+    return "./" + "/".join(parts)
+
+
+def site_to_abs(value) -> Path:
+    """Site-relative path ('./Albums/x', '/Albums/x') -> absolute Path.
+
+    Raises ValueError for traversal instead of silently mangling it -
+    ``'./..'.lstrip('./')`` would collapse to an empty string and hide the
+    problem from the validator.
+    """
+    text = str(value).replace("\\", "/").strip()
+    while text.startswith("./"):
+        text = text[2:]
+    text = text.lstrip("/")
+    parts = [part for part in text.split("/") if part not in ("", ".")]
+    if not parts or any(part == ".." for part in parts):
+        raise ValueError(f"unsafe site path: {value!r}")
+    return ROOT.joinpath(*parts)
 
 
 def normalize_src(value: str) -> str:
@@ -148,5 +190,25 @@ def pick_cover(folder: Path):
 
 
 def build_catalog_payload(albums) -> dict:
-    ordered = sorted(albums, key=lambda a: str(a.get("title") or a.get("id") or "").lower())
+    """Merge albums into the public catalog payload.
+
+    Album JSONs keep whatever path spelling the CMS wrote; only this generated
+    document is normalized to './Albums/...'.
+    """
+    normalized = []
+    for album in albums:
+        entry = dict(album)
+        if entry.get("cover"):
+            entry["cover"] = normalize_site_path(entry["cover"])
+        tracks = []
+        for track in entry.get("tracks") or []:
+            item = dict(track)
+            if item.get("src"):
+                item["src"] = normalize_site_path(item["src"])
+            if item.get("lyricsFile"):
+                item["lyricsFile"] = normalize_site_path(item["lyricsFile"])
+            tracks.append(item)
+        entry["tracks"] = tracks
+        normalized.append(entry)
+    ordered = sorted(normalized, key=lambda a: str(a.get("title") or a.get("id") or "").lower())
     return {"albums": ordered}

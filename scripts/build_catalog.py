@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import sys
+from pathlib import Path
 
 from catalog_lib import (
     ALBUMS_DIR,
@@ -33,6 +34,7 @@ from catalog_lib import (
     probe_duration,
     read_json,
     site_path,
+    site_to_abs,
     slugify,
     track_title_from_filename,
     write_json,
@@ -56,8 +58,15 @@ def load_existing_albums() -> dict:
 
 
 def abs_path(site_rel: str) -> Path:
-    """'./Albums/x/y.mp3' -> absolute Path under ROOT (works on Windows + POSIX)."""
-    return ROOT.joinpath(*str(site_rel).lstrip("./").split("/"))
+    """'./Albums/x/y.mp3' (or '/Albums/...') -> absolute Path under ROOT.
+
+    Unsafe values (traversal, empty) resolve to a path that cannot exist, so a
+    malformed entry is reported as missing instead of aborting the rebuild.
+    """
+    try:
+        return site_to_abs(site_rel)
+    except ValueError:
+        return ROOT / "__invalid_site_path__"
 
 
 def reconcile_album(album: dict, folder, dry_run: bool):
@@ -196,6 +205,9 @@ def main() -> int:
     print(f"\n{len(albums)} albums, {sum(len(a['tracks']) for a in albums)} tracks")
     if problems:
         print(f"{problems} problem(s) need attention")
+        # Non-zero so CI stops before publishing a catalog that silently lost
+        # audio, cover art or an album folder.
+        return 1
     return 0
 
 

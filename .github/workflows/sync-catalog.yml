@@ -12,6 +12,8 @@ on:
       - "css/**"
       - "index.html"
       - "tests/**"
+      - "package.json"
+      - "package-lock.json"
       - "admin/**"
       - "ADMIN.md"
       - ".github/workflows/sync-catalog.yml"
@@ -37,7 +39,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Install ffmpeg
         run: |
@@ -50,8 +52,10 @@ jobs:
           python tests/test_catalog.py
           python tests/test_validate.py
 
-      - name: Rebuild catalog.json
-        run: python scripts/sync_catalog.py sync
+      - name: Rebuild catalog.json from album data and the audio on disk
+        # build_catalog.py adds new audio, re-stamps durations from ffprobe and
+        # never touches lyrics. It exits non-zero if it had to drop anything.
+        run: python scripts/build_catalog.py
 
       - name: Validate the rebuilt catalog against the audio on disk
         run: python scripts/validate_catalog.py
@@ -63,7 +67,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Sync catalog.json from album files"
-          file_pattern: data/catalog.json
+          file_pattern: data/catalog.json data/albums/*.json
           commit_user_name: github-actions[bot]
           commit_user_email: github-actions[bot]@users.noreply.github.com
 
@@ -78,24 +82,23 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Install Puppeteer
         run: |
-          npm install --no-save puppeteer
+          npm ci
           npx puppeteer browsers install chrome
 
       - name: Serve the site
+        # tests/serve.cjs answers Range requests (206) like GitHub Pages does;
+        # python -m http.server does not, which silently breaks media seeking.
         run: |
-          python3 -m http.server 8765 --bind 127.0.0.1 &
+          node tests/serve.cjs 8765 &
           for i in $(seq 1 30); do
             if curl -sf http://127.0.0.1:8765/index.html > /dev/null; then break; fi
             sleep 1
           done
           curl -sf http://127.0.0.1:8765/index.html > /dev/null
 
-      - name: Audit linked lyrics and playback
-        run: node tests/admin-lyrics.cjs http://127.0.0.1:8765/
-
-      - name: Audit mobile layout
-        run: node tests/mobile.cjs http://127.0.0.1:8765/
+      - name: Audit lyrics, playback, and mobile layout
+        run: npm run test:browser

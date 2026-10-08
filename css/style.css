@@ -828,6 +828,26 @@ input[type="range"]::-moz-range-thumb {
   color: transparent;
 }
 
+/* Word-by-word karaoke: enhanced LRC / WebVTT files with word timings.
+   The per-word colours replace the line gradient for these lines. */
+.lyrics-panel.is-karaoke .lyric-line.has-words.is-active .lyric-text {
+  background-image: none;
+  color: inherit;
+}
+
+.lyrics-panel.is-karaoke .lyric-line.has-words.is-active .lyric-word {
+  color: color-mix(in srgb, var(--ink) 45%, transparent);
+  transition: color 140ms var(--ease);
+}
+
+.lyrics-panel.is-karaoke .lyric-line.has-words.is-active .lyric-word.is-past {
+  color: color-mix(in srgb, var(--accent) 72%, transparent);
+}
+
+.lyrics-panel.is-karaoke .lyric-line.has-words.is-active .lyric-word.is-active {
+  color: var(--accent);
+}
+
 .lyric-empty,
 .state-msg {
   color: var(--muted);

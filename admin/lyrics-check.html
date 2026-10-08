@@ -233,6 +233,91 @@
         margin-bottom: 0.2rem;
       }
 
+      #lyrics-lab.is-dragover {
+        border-color: var(--accent);
+        background: rgba(15, 95, 99, 0.06);
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .lab-facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .lab-facts li {
+        padding: 0.35rem 0.7rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      .lab-facts li.is-highlight {
+        border-color: rgba(15, 95, 99, 0.4);
+        background: rgba(15, 95, 99, 0.1);
+        color: var(--accent);
+      }
+
+      #lab-note {
+        margin: 0.75rem 0 0;
+        font-size: 0.85rem;
+        line-height: 1.6;
+      }
+
+      #lab-note[data-state="error"] {
+        color: #a42d29;
+        font-weight: 700;
+      }
+
+      #lab-preview {
+        max-height: 260px;
+        margin: 0.75rem 0 0;
+        padding: 0.75rem 0.85rem;
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.6);
+        font-size: 0.84rem;
+        line-height: 1.6;
+      }
+
+      #lab-preview:empty {
+        display: none;
+      }
+
+      .lab-line {
+        display: flex;
+        gap: 0.6rem;
+        margin: 0;
+        padding: 0.15rem 0;
+      }
+
+      .lab-time {
+        flex: 0 0 auto;
+        min-width: 3.4rem;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .lab-word {
+        color: var(--accent);
+      }
+
       @media (prefers-reduced-motion: reduce) {
         *,
         *::before,
@@ -278,12 +363,30 @@
         <ul id="results" aria-label="Linked lyrics checks"></ul>
       </section>
 
+      <section class="card" id="lyrics-lab" aria-labelledby="lab-title">
+        <h2 id="lab-title">Test a lyrics file before publishing</h2>
+        <p class="lede">
+          Drop or choose an <code>.lrc</code>, enhanced <code>.lrc</code>, <code>.vtt</code> or
+          <code>.srt</code> file. It runs through the exact parser the player uses, so this is what
+          visitors will see: line timings, word timings for karaoke, and any lines that would show
+          up untimed.
+        </p>
+        <div class="actions">
+          <label class="button-link" for="lab-file">Choose lyrics file</label>
+          <input class="sr-only" id="lab-file" type="file" accept=".lrc,.vtt,.srt,.txt" />
+          <span class="guidance">Or drag a file anywhere onto this card.</span>
+        </div>
+        <ul class="lab-facts" id="lab-facts" hidden aria-live="polite"></ul>
+        <p id="lab-note" role="status" aria-live="polite"></p>
+        <div id="lab-preview" aria-label="Parsed preview"></div>
+      </section>
+
       <section class="card" id="editing-guide" aria-labelledby="guide-title">
         <h2 id="guide-title">The reliable lyrics workflow</h2>
         <p class="guidance">Changes are published through the existing GitHub-backed album editor. Keep the lyric file and its track linked in the album entry.</p>
         <ol class="steps">
           <li><strong>1. Select the file</strong>Open the album editor, choose The Last Of Me, expand a song, and select its matching <code>.lrc</code> or <code>.vtt</code> under Timed lyrics file.</li>
-          <li><strong>2. Keep lyrics tidy</strong>Leave Lyrics text empty when a timed file is attached. Each synchronized LRC line starts with a timestamp, e.g. <code>[00:12.34] words</code>.</li>
+          <li><strong>2. Keep lyrics tidy</strong>Leave Lyrics text empty when a timed file is attached. LRC lines start with <code>[00:12.34] words</code>; enhanced LRC word tags <code>&lt;00:12.50&gt;</code>, WebVTT cues and SRT all work too.</li>
           <li><strong>3. Publish the album</strong>Publish the album and wait for GitHub Pages to update the public catalog and lyric assets.</li>
           <li><strong>4. Check the live site</strong>Return here and select Check linked lyrics; the report includes a direct link for each file that needs attention.</li>
         </ol>
@@ -385,6 +488,132 @@
           }
         });
       })();
+    </script>
+    <script type="module">
+      import { lyricsFormatLabel, parseLyricsFile } from "../js/lyrics.js";
+
+      const input = document.getElementById("lab-file");
+      const card = document.getElementById("lyrics-lab");
+      const facts = document.getElementById("lab-facts");
+      const note = document.getElementById("lab-note");
+      const preview = document.getElementById("lab-preview");
+
+      const chip = (label, highlight = false) => {
+        const item = document.createElement("li");
+        item.textContent = label;
+        if (highlight) item.classList.add("is-highlight");
+        return item;
+      };
+
+      function inspect(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onerror = () => showNote("That file could not be read.", true);
+        reader.onload = async () => {
+          const text = String(reader.result || "");
+          let parsed;
+          try {
+            parsed = parseLyricsFile(text, file.name);
+          } catch (error) {
+            showNote(`Could not parse that file (${error.message}).`, true);
+            return;
+          }
+          render(file, text, parsed);
+        };
+        reader.readAsText(file);
+      }
+
+      function showNote(message, isError = false) {
+        note.textContent = message;
+        note.dataset.state = isError ? "error" : "";
+      }
+
+      function render(file, text, parsed) {
+        const { lines, format, timed, wordTimed } = parsed;
+        const wordCount = lines.reduce((total, line) => total + (line.words?.length || 0), 0);
+        const timedLines = lines.filter((line) => typeof line.time === "number").length;
+
+        facts.hidden = false;
+        const sizeKb = Math.max(1, Math.round(file.size / 1024));
+        facts.replaceChildren(
+          chip(lyricsFormatLabel(format), wordTimed),
+          chip(`${lines.length} line${lines.length === 1 ? "" : "s"}`),
+          chip(`${timedLines} timed`),
+          wordTimed ? chip(`${wordCount} word timings`, true) : chip("line-by-line only"),
+          chip(`${file.name} · ${sizeKb} KB`)
+        );
+
+        facts.dataset.format = format;
+        facts.dataset.lines = String(lines.length);
+        facts.dataset.timed = String(timedLines);
+        facts.dataset.words = String(wordCount);
+
+        if (!timed) {
+          showNote(
+            "No timestamps found - these lines will not scroll with the music. Add [00:12.34] LRC stamps, WebVTT cues or SRT timings.",
+            true
+          );
+        } else if (!wordTimed) {
+          showNote(
+            "Line-by-line timing only. For word-by-word karaoke, use enhanced LRC tags such as [00:12.34]<00:12.50>word <00:12.80>or WebVTT inline <00:00:12.500> stamps."
+          );
+        } else {
+          showNote(
+            "Ready to publish: line and word timings both parse, so karaoke will highlight each word as it is sung."
+          );
+        }
+
+        preview.replaceChildren();
+        for (const line of lines.slice(0, 12)) {
+          const row = document.createElement("p");
+          row.className = "lab-line";
+
+          const time = document.createElement("span");
+          time.className = "lab-time";
+          time.textContent = typeof line.time === "number" ? `${line.time.toFixed(2)}s` : "-";
+          row.append(time);
+
+          const body = document.createElement("span");
+          if (line.words?.length) {
+            for (const word of line.words) {
+              const span = document.createElement("span");
+              span.className = "lab-word";
+              span.title = `${word.time.toFixed(3)}s`;
+              span.textContent = word.text;
+              body.append(span);
+            }
+          } else {
+            body.textContent = line.text;
+          }
+          row.append(body);
+          preview.append(row);
+        }
+
+        if (lines.length > 12) {
+          const more = document.createElement("p");
+          more.className = "lab-line";
+          more.textContent = `… ${lines.length - 12} more lines`;
+          preview.append(more);
+        }
+
+        // The note keeps the parse verdict; upload steps live in the guide below.
+      }
+
+      input.addEventListener("change", () => inspect(input.files?.[0]));
+
+      for (const eventName of ["dragenter", "dragover"]) {
+        card.addEventListener(eventName, (event) => {
+          event.preventDefault();
+          card.classList.add("is-dragover");
+        });
+      }
+      for (const eventName of ["dragleave", "drop"]) {
+        card.addEventListener(eventName, () => card.classList.remove("is-dragover"));
+      }
+      card.addEventListener("drop", (event) => {
+        event.preventDefault();
+        inspect(event.dataTransfer?.files?.[0]);
+      });
     </script>
   </body>
 </html>
