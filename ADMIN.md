@@ -1,195 +1,110 @@
-# Manage your music library (Sveltia CMS)
+# Manage your music library (Pages CMS)
 
-The public player reads [`data/catalog.json`](data/catalog.json).  
-Day-to-day editing is done in the browser at **`/admin/`**.
+The public player reads the generated [`data/catalog.json`](data/catalog.json). Album metadata, track order, and lyric links remain in the existing [`data/albums/*.json`](data/albums/) files. Pages CMS is a GitHub-backed editor for those same JSON files; it does not replace the website, player, or catalog pipeline.
 
-**Your live site:** https://tyraxiss.github.io/  
-**Your live admin URL:** https://tyraxiss.github.io/admin/
+**Your live site:** https://tyraxiss.github.io/
+**Library admin page:** https://tyraxiss.github.io/admin/
+**Pages CMS:** https://app.pagescms.org/
 
----
+## First-time setup
 
-## Recommended: sign in with a GitHub token (solo use)
+1. Open [Pages CMS](https://app.pagescms.org/) and sign in with GitHub.
+2. Install/authorize the Pages CMS GitHub App for the account that owns `Tyraxiss/Tyraxiss.github.io`. Grant access to this repository. Pages CMS uses its GitHub App for sign-in and repository changes; no personal access token, OAuth worker, Cloudflare service, or secret in this repository is needed.
+3. Open `Tyraxiss/Tyraxiss.github.io` and select the `main` branch.
+4. Pages CMS reads the root [`.pages.yml`](.pages.yml) configuration. Choose **Music Library** to search albums by title, artist, or year.
+5. Open an album to edit its metadata and artwork. The ordered track list is an array stored inside that album's JSON; expand a track to update its title, audio, duration, or lyrics.
 
-This is the simplest option when only you edit the library. No Cloudflare or OAuth app required.
+If the repository is not listed, check that you signed in with the GitHub account that owns it and installed the Pages CMS GitHub App with access to the repository. Configuration changes take effect when Pages CMS reloads the repository/branch.
 
-1. Open https://tyraxiss.github.io/admin/
-2. Click **Sign In with Token** (wording may be similar)
-3. Use the link in the dialog to create a GitHub **Personal Access Token**
-   - Prefer a **fine-grained** token if offered
-   - Resource access: only the **Tyraxiss/Tyraxiss.github.io** repo
-   - Permissions: **Contents** read/write (and metadata read)
-   - Or classic token with `repo` scope if that’s what the dialog links to
-4. Generate the token, copy it, paste it into the CMS prompt
-5. You’re in — open **Albums**, edit one album at a time, then **Publish**
+## What the CMS edits
 
-The token is stored in your browser’s local storage. If login stops working later, create a new token and sign in again.
+- Album documents: `data/albums/<album-id>.json` (one JSON document per album).
+- Artwork and audio: files under each album's existing `Albums/<Album Name>/` folder.
+- Synchronized lyrics: files under `Albums/lyrics/`.
+- Generated public catalog: `data/catalog.json` is rebuilt by the existing automation; do not edit it as the source of truth.
 
----
+The JSON model stays as it is. In particular, `duration` remains present on tracks because the catalog builder refreshes it from the real audio using FFmpeg/ffprobe, and the player and validation tests rely on it. The generated catalog normalizes media paths for the player; no site URL, content layout, or player migration is part of this CMS change.
 
-## Optional: one-click “Login with GitHub” (OAuth)
+## Editing albums, tracks, and lyrics
 
-Only needed if you want a normal GitHub login button instead of pasting a token. Uses a free Cloudflare Worker as a tiny auth proxy.
+1. In Pages CMS, open **Music Library**, search for an album, and open it.
+2. Edit the album title, artist, year, and cover as needed. Keep its stable album ID aligned with its JSON filename and matching folder under `Albums/`.
+3. Expand a row in **Ordered tracks** to edit that track. Track order in this list is playback order. Keep existing track IDs unchanged; for a new track, the build can assign an ID when left blank.
+4. Select the matching audio file under that album's `Albums/<Album Name>/` folder. Upload new audio there rather than to the repository root or the lyrics directory.
+5. For synchronized lyrics, select or upload the matching `.lrc`, `.vtt`, or `.srt` file under `Albums/lyrics/`. The public player supports line-timed LRC, enhanced LRC word timing, WebVTT cues/inline timestamps, and SRT. Leave plain lyrics empty when a timed file is attached.
+6. For unsynchronized lyrics, leave the lyrics-file field empty and use **Plain lyrics (fallback)**.
+7. Save/commit the changes in Pages CMS. GitHub Actions rebuilds and validates the catalog; after that, GitHub Pages publishes the update.
+8. Check the published files at [`/admin/lyrics-check.html`](https://tyraxiss.github.io/admin/lyrics-check.html): run **Check linked lyrics** and use the file preview before publishing new lyric files.
 
-### 1. Deploy the authenticator
+Uploaded audio/art belongs in `Albums/`; lyric uploads belong in `Albums/lyrics/`. Keep individual MP3s under **100 MB** (Git LFS does not work with GitHub Pages).
 
-1. Sign up / log in at [Cloudflare](https://dash.cloudflare.com/) (free)
-2. Open [sveltia/sveltia-cms-auth](https://github.com/sveltia/sveltia-cms-auth)
-3. Click **Deploy to Cloudflare Workers**
-4. Copy your worker URL, e.g. `https://sveltia-cms-auth.YOUR_SUBDOMAIN.workers.dev`
+## The existing safety pipeline
 
-### 2. Create a GitHub OAuth App
+The CMS changes only the editing interface. The repository workflow keeps its existing checks: Python and Node setup, FFmpeg installation, catalog tests, audio/JSON reconciliation, catalog validation, player logic tests, browser-based lyrics/playback checks, mobile layout audit, and automatic commit of regenerated catalog data. The workflow also watches `.pages.yml`, so configuration edits run the same checks. Do not bypass or remove these checks when editing CMS configuration.
 
-1. Open https://github.com/settings/applications/new
-2. Fill in:
-   - **Application name:** `Brian J. Smith CMS` (any name)
-   - **Homepage URL:** `https://tyraxiss.github.io/`
-   - **Authorization callback URL:** `https://YOUR-WORKER.workers.dev/callback`
-3. Register, then **Generate a new client secret**
-4. Copy the **Client ID** and **Client Secret**
+## Local preview, rebuild, and validation
 
-### 3. Add secrets to the Worker
-
-In Cloudflare → your `sveltia-cms-auth` worker → **Settings** → **Variables**:
-
-| Variable | Value |
-|---|---|
-| `GITHUB_CLIENT_ID` | Client ID from step 2 |
-| `GITHUB_CLIENT_SECRET` | Client Secret (encrypt/hide it) |
-| `ALLOWED_DOMAINS` (optional) | `tyraxiss.github.io` |
-
-Save / redeploy the worker.
-
-### 4. Point the CMS at the worker
-
-In [`admin/config.yml`](admin/config.yml):
-
-```yaml
-backend:
-  name: github
-  repo: Tyraxiss/Tyraxiss.github.io
-  branch: main
-  base_url: https://YOUR-WORKER.workers.dev
-```
-
-Commit and push, wait for Pages to update, then open `/admin/` and use **Login with GitHub**.
-
----
-
-## Editing tracks and lyrics
-
-1. Open `/admin/` and sign in, then open **Albums** and select the album you want to edit.
-2. Expand the song. Use **Timed lyrics file (.lrc, enhanced .lrc, .vtt or .srt)** to select its existing file from `Albums/lyrics/`. The upload picker is filtered to lyric files; avoid uploading a duplicate when its file already exists.
-3. For a new synced file, upload it from the same field. LRC lines must start with a timestamp such as `[00:12.34] words`; for word-by-word karaoke add word tags (`[00:12.34]<00:12.50>word <00:12.80>by word`) or WebVTT inline `<00:00:12.500>` stamps. Keep **Lyrics text (fallback)** empty while a timed file is attached.
-4. For unsynchronized lyrics, leave the file field empty and paste plain lyrics into **Lyrics text (fallback)**.
-5. Click **Publish**. A GitHub Action rebuilds `data/catalog.json`; wait for GitHub Pages to update.
-6. Open [`/admin/lyrics-check.html`](https://tyraxiss.github.io/admin/lyrics-check.html) and run **Check linked lyrics**. The checker fetches the published catalog and every linked file and reports broken paths, inaccessible assets or missing timestamps with links to each file.
-
-The check runs against the **published live files**, not unsaved drafts. If a path fails, return to the album entry, choose the matching existing lyrics asset, publish, and wait for Pages again. The public player prefers `lyricsFile` over the fallback text.
-
-Uploaded lyric files are stored under `Albums/lyrics/`. For a new song, add the audio/track and set its matching `lyricsFile` before publishing; uploading a lyric alone does not attach it to a track.
-
----
-
-## Local player preview
+Serve the website over HTTP (rather than opening a raw `file://` path):
 
 ```bash
-npx --yes serve .        # or: node tests/serve.cjs 8765
+node tests/serve.cjs 8765
 ```
 
-Then open the printed URL (not a raw `file://` path).
+This server answers HTTP Range requests (206) the way GitHub Pages does, so seeking works. `python -m http.server` does not provide the required range behavior for media.
 
-`tests/serve.cjs` answers HTTP Range requests (206) the way GitHub Pages does,
-so seeking works while testing locally. `python -m http.server` does not, and
-with it every seek silently snaps back to the start of the track.
-
-You can also drop album folders into `Albums/` (not `Albums/lyrics/`) and rebuild:
+When adding audio directly to an album directory, run the reconciler. It discovers new tracks, assigns IDs, refreshes durations and cover art, and preserves existing lyrics:
 
 ```bash
-# Scan disk folders, overlay real durations/cover art onto the album JSONs,
-# then rebuild catalog.json. Safe: it never overwrites lyrics or lyric files.
 python scripts/build_catalog.py
-
-# Preview what would change without writing anything
-python scripts/build_catalog.py --dry-run
+python scripts/build_catalog.py --dry-run  # preview without writing
 ```
 
-If you only edited `data/albums/*.json` by hand or in the CMS, just merge:
+If only album JSON metadata was edited, rebuild the generated catalog with:
 
 ```bash
 python scripts/sync_catalog.py sync
 ```
 
-### Supported lyric formats
+Validate media and metadata with:
+
+```bash
+python scripts/validate_catalog.py
+python scripts/validate_catalog.py --strict  # warnings also fail
+```
+
+The same core validation runs automatically in CI before publication.
+
+## Supported lyric formats
 
 | Format | Timing | Karaoke |
 |---|---|---|
-| LRC `[00:12.34] words` | line-by-line | line highlight |
-| Enhanced LRC `[00:12.34]<00:12.50>word` | line + word | word-by-word |
-| WebVTT cues (optional inline `<00:00:12.500>` stamps) | line + word | line or word-by-word |
-| SRT (`00:00:12,500 --> ...`) | line-by-line | line highlight |
-| Plain text | none | static list |
+| LRC `[00:12.34] words` | Line-by-line | Line highlight |
+| Enhanced LRC `[00:12.34]<00:12.50>word` | Line and word | Word-by-word |
+| WebVTT cues (optional inline `<00:00:12.500>` stamps) | Line and word | Line or word-by-word |
+| SRT (`00:00:12,500 --> ...`) | Line-by-line | Line highlight |
+| Plain text | None | Static lyrics |
 
-All five are parsed by `js/lyrics.js`, which the public player and the library
-tools page share, so a file that previews cleanly behaves identically live.
+The public player and lyrics tools share [`js/lyrics.js`](js/lyrics.js), so files that parse in the preview use the same parser as playback.
 
-### Adding a lyric file (three ways)
+## Adding or checking lyrics from the command line
 
-1. **In the browser (normal path):** open `admin/lyrics-check.html`, drop the
-   file on **Test a lyrics file before publishing** to confirm it parses, then
-   open the album editor, pick it in **Timed lyrics file** and publish.
-2. **From the command line:**
-
-   ```bash
-   python scripts/add_lyrics.py the-last-of-me-02 "~/Downloads/song.lrc"
-   ```
-
-   It copies the file into `Albums/lyrics/`, links it on that track, rebuilds
-   `data/catalog.json` and validates. Use `--name other.lrc` to control the
-   destination filename, `--dry-run` to preview. Titles work too when they are
-   unique (`python scripts/add_lyrics.py "Blue-Eyed Angel" file.lrc`).
-3. **Upload the file yourself** into `Albums/lyrics/` and link it in the album
-   editor (the CMS file picker lists that folder).
-
-### Checking your work
+The normal workflow is to preview the file at `admin/lyrics-check.html`, then upload/select it in Pages CMS and link it to its track. The helper script is also available:
 
 ```bash
-# Fails loudly on missing audio, missing cover art, duplicate track ids,
-# wrong durations and broken lyricsFile paths. Exits non-zero on problems.
-python scripts/validate_catalog.py
-
-# Make warnings (e.g. tiny cover art) fail too
-python scripts/validate_catalog.py --strict
+python scripts/add_lyrics.py the-last-of-me-02 "~/Downloads/song.lrc"
 ```
 
-The same validation runs automatically in CI on every push, so a broken
-catalog can never reach the live site.
+It copies the file into `Albums/lyrics/`, links it on that track, rebuilds `data/catalog.json`, and validates. Use `--name other.lrc` to choose a destination filename, or `--dry-run` to preview. Titles work too when unique.
 
-### Tests
+Tests can be run locally with:
 
 ```bash
-python tests/test_catalog.py    # pipeline helpers + shipped catalog invariants
-python tests/test_validate.py   # proves the validator catches real breakage
-node  tests/app-logic.test.js   # lyric parsing, shuffle, search, URL encoding
+python tests/test_catalog.py
+python tests/test_validate.py
+node tests/app-logic.test.js
+npm run test:browser  # requires the local range-capable server and Puppeteer/Chrome
 ```
 
-Keep individual MP3s under **100 MB**. Git **LFS does not work** with GitHub Pages.
+## Repository size
 
-### About repository size
-
-Audio is committed straight into git (LFS is not an option on Pages), so the
-repo grows with every track. It currently holds roughly 500 MB of audio, which
-is fine — GitHub only *warns* above 1 GB and hard-blocks at 5 GB.
-
-If you ever approach that warning, the options in order of preference are:
-lower the bitrate of new uploads, move audio to external hosting and point
-`src` at CDN URLs, or start a fresh repo without history. Re-encoding the
-existing files in place is the least attractive option — it is lossy-to-lossy,
-so it permanently degrades the masters for a modest saving.
-
-### Adding songs
-
-Drop the audio file into the album folder and run `python scripts/build_catalog.py`.
-It adds the track with the real duration read from the file, assigns it a stable
-id, and keeps every existing track's lyrics intact. Re-running it is always safe.
-It exits non-zero if it had to drop an album folder, audio file or cover, so a
-broken state can never be published silently (CI relies on that).
+Audio is committed straight into git (LFS is not an option on Pages), so the repository grows with every track. GitHub warns above 1 GB and hard-blocks at 5 GB. If it approaches that warning, consider lowering the bitrate for new uploads or hosting audio externally and pointing `src` at a CDN URL. Re-encoding existing files in place is lossy-to-lossy and permanently degrades the masters.

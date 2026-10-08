@@ -1,197 +1,86 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
-    <title>Library Admin · Brian J. Smith</title>
+    <meta name="description" content="Open the Pages CMS music library editor." />
+    <title>Music Library · Brian J. Smith</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
       :root {
+        color-scheme: light;
         --ink: #182028;
         --muted: #5c6a75;
         --line: rgba(24, 32, 40, 0.12);
         --accent: #0f5f63;
-        --paper: rgba(255, 255, 255, 0.72);
-        --font-display: "Instrument Serif", Georgia, serif;
-        --font-body: "Manrope", system-ui, sans-serif;
+        --paper: rgba(255, 255, 255, 0.82);
+        --display: "Instrument Serif", Georgia, serif;
+        --body: "Manrope", system-ui, sans-serif;
       }
-
-      * {
-        box-sizing: border-box;
-      }
-
+      * { box-sizing: border-box; }
       body {
-        margin: 0;
         min-height: 100vh;
-        font-family: var(--font-body);
+        margin: 0;
         color: var(--ink);
-        background:
-          radial-gradient(900px 520px at 8% 0%, rgba(176, 206, 214, 0.75), transparent 60%),
-          radial-gradient(800px 480px at 92% 8%, rgba(214, 198, 184, 0.45), transparent 55%),
+        font-family: var(--body);
+        background: radial-gradient(900px 520px at 8% 0%, rgba(176, 206, 214, .75), transparent 60%),
+          radial-gradient(800px 480px at 92% 8%, rgba(214, 198, 184, .45), transparent 55%),
           linear-gradient(165deg, #e8eef2 0%, #f3f1ec 48%, #e4ebe8 100%);
       }
-
-      .admin-chrome {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 1.25rem 1.25rem 0.5rem;
-      }
-
-      .admin-top {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: end;
-        justify-content: space-between;
-        gap: 1rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid var(--line);
-        margin-bottom: 1rem;
-      }
-
-      .brand-name {
-        margin: 0;
-        font-family: var(--font-display);
-        font-size: clamp(2rem, 4vw, 2.8rem);
-        font-weight: 400;
-        letter-spacing: -0.03em;
-        line-height: 1;
-      }
-
-      .brand-sub {
-        margin: 0.35rem 0 0;
-        color: var(--muted);
-        font-size: 0.78rem;
-        font-weight: 700;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-      }
-
-      .admin-links {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-      }
-
-      .admin-links a {
-        color: var(--accent);
-        text-decoration: none;
-        font-size: 0.86rem;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-      }
-
-      .admin-links a:hover {
-        text-decoration: underline;
-      }
-
-      .help-card {
-        background: var(--paper);
-        border: 1px solid rgba(255, 255, 255, 0.7);
-        border-radius: 16px;
-        padding: 1rem 1.15rem 1.1rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 14px 34px rgba(40, 55, 70, 0.08);
-        backdrop-filter: blur(10px);
-      }
-
-      .help-card h2 {
-        margin: 0 0 0.55rem;
-        font-family: var(--font-display);
-        font-size: 1.35rem;
-        font-weight: 400;
-      }
-
-      .help-card ol {
-        margin: 0;
-        padding-left: 1.2rem;
-        color: var(--muted);
-        line-height: 1.55;
-      }
-
-      .help-card li + li {
-        margin-top: 0.35rem;
-      }
-
-      .help-card strong {
-        color: var(--ink);
-        font-weight: 700;
-      }
-
-      .help-card details {
-        margin-top: 0.75rem;
-      }
-
-      .help-card summary {
-        cursor: pointer;
-        color: var(--accent);
-        font-weight: 700;
-        font-size: 0.9rem;
-      }
-
-      .help-card .tip {
-        margin: 0.55rem 0 0;
-        color: var(--muted);
-        font-size: 0.92rem;
-        line-height: 1.5;
-      }
-
-      /* Let Sveltia fill the page comfortably under the chrome */
-      body > div:not(.admin-chrome) {
-        min-height: 70vh;
-      }
-
-      @media (max-width: 560px) {
-        .admin-chrome {
-          padding: 0.85rem 0.8rem 0.4rem;
-        }
-
-        .help-card {
-          padding: 0.9rem;
-        }
-      }
+      main { width: min(100% - 2rem, 900px); margin: 0 auto; padding: clamp(1rem, 4vw, 2.5rem) 0 3rem; }
+      header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+      h1, h2 { font-family: var(--display); font-weight: 400; }
+      h1 { margin: 0; font-size: clamp(2.4rem, 7vw, 4rem); line-height: 1; }
+      .eyebrow { margin: 0 0 .45rem; color: var(--muted); font-size: .75rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+      nav { display: flex; flex-wrap: wrap; gap: .9rem; }
+      a { color: var(--accent); font-weight: 700; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      a:focus-visible { outline: 3px solid rgba(15, 95, 99, .35); outline-offset: 3px; }
+      .card { margin-top: 1.2rem; padding: clamp(1rem, 4vw, 1.6rem); border: 1px solid rgba(255, 255, 255, .8); border-radius: 18px; background: var(--paper); box-shadow: 0 14px 34px rgba(40, 55, 70, .08); backdrop-filter: blur(10px); }
+      .card h2 { margin: 0; font-size: 1.7rem; }
+      p, li { color: var(--muted); font-size: .94rem; line-height: 1.65; }
+      .lede { margin: .45rem 0 1rem; }
+      .button { display: inline-flex; min-height: 46px; align-items: center; padding: .7rem 1.1rem; border-radius: 999px; background: var(--accent); color: white; }
+      .button:hover { filter: brightness(1.12); text-decoration: none; }
+      ol { margin: .6rem 0 0; padding-left: 1.3rem; }
+      li + li { margin-top: .35rem; }
+      code { color: var(--ink); font-size: .9em; }
     </style>
   </head>
   <body>
-    <div class="admin-chrome">
-      <header class="admin-top">
+    <main>
+      <header>
         <div>
-          <p class="brand-name">Brian J. Smith</p>
-          <p class="brand-sub">Library admin</p>
+          <p class="eyebrow">Brian J. Smith · Music library</p>
+          <h1>Manage your music</h1>
         </div>
-        <nav class="admin-links">
-          <a href="../">View public site</a>
+        <nav aria-label="Library navigation">
+          <a href="../">View player</a>
           <a href="./lyrics-check.html">Lyrics &amp; tools</a>
           <a href="../ADMIN.md">Setup notes</a>
         </nav>
       </header>
 
-      <section class="help-card">
-        <h2>Sign-in and editing help</h2>
+      <section class="card" aria-labelledby="open-title">
+        <h2 id="open-title">Your album library</h2>
+        <p class="lede">Pages CMS edits the existing album files in <code>data/albums/</code> and uploads audio, artwork, and lyrics into the existing <code>Albums/</code> folders. The player and catalog pipeline stay unchanged.</p>
+        <a class="button" href="https://app.pagescms.org/" target="_blank" rel="noopener noreferrer">Open Pages CMS ↗</a>
         <ol>
-          <li>Sign in with a <strong>GitHub token</strong> (not “Sign in with GitHub,” unless OAuth is configured).</li>
-          <li>Open <strong>Albums</strong>, choose the album, and expand the track you want to edit.</li>
-          <li>Select the matching existing file in <strong>Timed lyrics file (.lrc or .vtt)</strong>. Files already live under <strong>Albums/lyrics/</strong>; choose one instead of uploading a duplicate.</li>
-          <li>For a new song, drop its <strong>.lrc or .vtt</strong> file onto the lyrics field. Use timestamps like <code>[00:12.34] Hello there</code> for synchronized karaoke.</li>
-          <li>Publish your album, wait for GitHub Pages to update, then <a href="./lyrics-check.html">check the live lyrics</a>.</li>
+          <li>Sign in to Pages CMS with GitHub and open the <strong>Tyraxiss / Tyraxiss.github.io</strong> repository on the <strong>main</strong> branch.</li>
+          <li>Choose <strong>Music Library</strong> to search albums by title, artist, or year. Open an album to edit its artwork and metadata or expand its ordered track list.</li>
+          <li>Make changes in Pages CMS and wait for the repository workflow and GitHub Pages deployment to finish before checking the live player.</li>
         </ol>
-        <details>
-          <summary>Plain lyrics, sign-in and troubleshooting</summary>
-          <p class="tip">
-            Leave “Lyrics text” empty if the song uses a timed file. For unsynchronized lyrics, paste plain text there instead.
-            Use “Sign In with Token” and a repository-limited GitHub access token with Contents read/write and Metadata read permissions.
-            If a file is missing from the published checker, reopen the album and select the matching existing lyrics asset before publishing again.
-          </p>
-        </details>
       </section>
-    </div>
 
-    <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+      <section class="card" aria-labelledby="lyrics-title">
+        <h2 id="lyrics-title">Lyrics and validation</h2>
+        <p>Timed LRC, enhanced LRC, WebVTT, and SRT files belong in <code>Albums/lyrics/</code>. Use the lyrics tools page to preview a file before publishing and check the live linked files afterward.</p>
+        <p>Album JSON remains the source of truth for track order and lyrics links. The GitHub Actions pipeline continues to refresh durations from audio with FFmpeg, validate media paths, and test player playback and mobile layout.</p>
+        <a href="./lyrics-check.html">Open lyrics checker and preview tools →</a>
+      </section>
+    </main>
   </body>
 </html>

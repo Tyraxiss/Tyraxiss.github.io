@@ -1,11 +1,11 @@
 """Shared helpers for reading/writing catalog data.
 
 The single source of truth for album metadata is ``data/albums/<id>.json``
-(what the Sveltia CMS edits). ``data/catalog.json`` is a generated merge of
-those files that the public player fetches.
+(the Pages CMS music library edits these files). ``data/catalog.json`` is a
+generated merge of those files that the public player fetches.
 
 Nothing in here may ever discard lyrics or lyric files: build_catalog.py reads
-album metadata from the CMS-owned JSON files and only *overlays* facts that can
+album metadata from the editable JSON files and only *overlays* facts that can
 be measured from disk (durations, cover art, which audio files exist).
 """
 

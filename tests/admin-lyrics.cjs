@@ -1,4 +1,4 @@
-// End-to-end lyrics checks against the site as visitors and editors use it.
+// End-to-end lyrics checks against the site as visitors use it.
 //
 // Usage: node tests/admin-lyrics.cjs [site-url]
 // Defaults to http://localhost:8765/ (serve the repository root first).
@@ -136,8 +136,31 @@ async function main() {
       lyricResults.every((item) => /\.(lrc|vtt|srt)$/i.test(item.link))
     );
     check("lyrics dashboard has no script errors", adminErrors.length === 0, adminErrors.join(" | "));
-    const editorLink = await page.$eval('a[href="./"]', (link) => new URL(link.href).pathname);
-    check("lyrics dashboard links to the library editor", editorLink.endsWith("/admin/"), editorLink);
+    const cmsLink = await page.$eval(
+      'a[href="https://app.pagescms.org/"]',
+      (link) => ({ href: link.href, rel: link.rel })
+    );
+    check(
+      "lyrics dashboard links to Pages CMS safely",
+      cmsLink.href === "https://app.pagescms.org/" && /noopener/.test(cmsLink.rel),
+      JSON.stringify(cmsLink)
+    );
+
+    await page.goto(new URL("admin/", SITE_URL).href, { waitUntil: "networkidle2" });
+    const launcher = await page.$eval(
+      'a[href="https://app.pagescms.org/"]',
+      (link) => ({ href: link.href, rel: link.rel, text: link.textContent })
+    );
+    check(
+      "admin launcher links to the Pages CMS app",
+      launcher.href === "https://app.pagescms.org/" && /noopener/.test(launcher.rel),
+      JSON.stringify(launcher)
+    );
+    check(
+      "admin launcher explains repository selection",
+      (await page.$eval("main", (main) => main.textContent)).includes("Tyraxiss / Tyraxiss.github.io")
+    );
+    await page.goto(new URL("admin/lyrics-check.html", SITE_URL).href, { waitUntil: "networkidle2" });
 
     // ---- the lyrics lab parses with the player's own parser ---------------
     if (target) {

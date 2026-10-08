@@ -337,17 +337,17 @@
         </div>
         <nav aria-label="Library navigation">
           <a href="../">View player</a>
-          <a href="./">Open library editor</a>
+          <a href="https://app.pagescms.org/" target="_blank" rel="noopener noreferrer">Open Pages CMS</a>
           <a href="../ADMIN.md">Setup help</a>
         </nav>
       </header>
 
       <section class="card" id="open-editor" aria-labelledby="edit-title">
         <h2 id="edit-title">Edit your albums</h2>
-        <p class="lede">Use the familiar GitHub-backed album editor to update tracks, choose existing lyrics, and publish changes.</p>
+        <p class="lede">Manage album JSON, ordered tracks, audio, artwork, and synchronized lyrics in Pages CMS. It edits the same repository files used by the player.</p>
         <div class="actions">
-          <a class="button-link" href="./">Open album editor</a>
-          <span class="guidance">Sign in with your GitHub access token, choose Albums, and expand the song you want to edit.</span>
+          <a class="button-link" href="https://app.pagescms.org/" target="_blank" rel="noopener noreferrer">Open Pages CMS</a>
+          <span class="guidance">Sign in with GitHub and select the Tyraxiss/Tyraxiss.github.io repository on main. See the setup notes for help.</span>
         </div>
       </section>
 
@@ -383,15 +383,15 @@
 
       <section class="card" id="editing-guide" aria-labelledby="guide-title">
         <h2 id="guide-title">The reliable lyrics workflow</h2>
-        <p class="guidance">Changes are published through the existing GitHub-backed album editor. Keep the lyric file and its track linked in the album entry.</p>
+        <p class="guidance">Changes are committed to the repository through Pages CMS. Keep the lyric file and its track linked in the album entry.</p>
         <ol class="steps">
-          <li><strong>1. Select the file</strong>Open the album editor, choose The Last Of Me, expand a song, and select its matching <code>.lrc</code> or <code>.vtt</code> under Timed lyrics file.</li>
+          <li><strong>1. Select the file</strong>Open Pages CMS, choose The Last Of Me, expand a song, and select its matching <code>.lrc</code> or <code>.vtt</code> under Timed lyrics file.</li>
           <li><strong>2. Keep lyrics tidy</strong>Leave Lyrics text empty when a timed file is attached. LRC lines start with <code>[00:12.34] words</code>; enhanced LRC word tags <code>&lt;00:12.50&gt;</code>, WebVTT cues and SRT all work too.</li>
-          <li><strong>3. Publish the album</strong>Publish the album and wait for GitHub Pages to update the public catalog and lyric assets.</li>
-          <li><strong>4. Check the live site</strong>Return here and select Check linked lyrics; the report includes a direct link for each file that needs attention.</li>
+          <li><strong>3. Commit your changes</strong>Save the album changes in Pages CMS and wait for GitHub Actions and GitHub Pages to update the public catalog and lyric assets.</li>
+          <li><strong>4. Check the live site</strong>After deployment, return here and select Check linked lyrics; the report includes a direct link for each file that needs attention.</li>
         </ol>
         <p class="guidance">
-          <strong>Adding new songs:</strong> drop the audio into its album folder, add the track through the editor, then attach its timed lyric file. Lines must use timestamps such as <code>[00:12.34] words</code>. Existing reusable lyrics are in <code>Albums/lyrics/</code>.
+          <strong>Adding new songs:</strong> upload the audio into its album folder, add the track in Pages CMS, then attach its timed lyric file. Lines must use timestamps such as <code>[00:12.34] words</code>. Existing reusable lyrics are in <code>Albums/lyrics/</code>.
         </p>
       </section>
     </main>

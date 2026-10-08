@@ -1,0 +1,109 @@
+media:
+  - name: album-assets
+    label: Album artwork and audio
+    input: Albums
+    output: /Albums
+    rename: false
+    extensions: [png, jpg, jpeg, webp, mp3, m4a, aac, ogg, oga, opus, wav]
+  - name: lyrics
+    label: Synchronized lyrics
+    input: Albums/lyrics
+    output: /Albums/lyrics
+    rename: false
+    extensions: [lrc, vtt, srt, txt]
+
+content:
+  - name: albums
+    label: Music Library
+    type: collection
+    path: data/albums
+    format: json
+    subfolders: false
+    filename:
+      template: "{fields.id}.json"
+      field: false
+    view:
+      fields: [cover, title, artist, year]
+      primary: title
+      sort: [title, artist, year]
+      search: [title, artist, year]
+      default:
+        search: ""
+        sort: title
+        order: asc
+    fields:
+      - name: id
+        label: Album ID
+        type: string
+        required: true
+        pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        description: "Stable URL-safe ID and JSON filename (for example broken-thoughts). New IDs should match the album folder name in Albums/."
+      - name: title
+        label: Album title
+        type: string
+        required: true
+      - name: artist
+        label: Artist
+        type: string
+        required: true
+        description: "The catalog builder uses Brian J. Smith as the artist fallback when it discovers a new album on disk."
+      - name: year
+        label: Release year
+        type: number
+        required: false
+      - name: cover
+        label: Album artwork
+        type: image
+        required: true
+        options:
+          media: album-assets
+          extensions: [png, jpg, jpeg, webp]
+          rename: false
+        description: "Choose or upload artwork inside this album's folder under Albums/. Square images work best."
+      - name: tracks
+        label: Ordered tracks
+        type: object
+        list:
+          min: 1
+          collapsible:
+            collapsed: true
+            summary: "{index}. {title}"
+        fields:
+          - name: id
+            label: Track ID
+            type: string
+            required: false
+            pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            description: "Keep existing IDs stable. Leave blank for a new track; build_catalog.py assigns its ID."
+          - name: title
+            label: Song title
+            type: string
+            required: true
+          - name: duration
+            label: Duration (seconds)
+            type: number
+            required: false
+            description: "The catalog build refreshes this from the audio with ffprobe. Keep the field in the JSON; do not remove it."
+          - name: src
+            label: Audio file
+            type: file
+            required: true
+            options:
+              media: album-assets
+              extensions: [mp3, m4a, aac, ogg, oga, opus, wav]
+              rename: false
+            description: "Choose or upload the audio in the matching album folder under Albums/."
+          - name: lyricsFile
+            label: Synchronized lyrics file
+            type: file
+            required: false
+            options:
+              media: lyrics
+              extensions: [lrc, vtt, srt, txt]
+              rename: false
+            description: "Choose or upload a timed LRC, WebVTT, or SRT file in Albums/lyrics/."
+          - name: lyrics
+            label: Plain lyrics (fallback)
+            type: text
+            required: false
+            description: "Optional unsynchronized lyrics. Used only when no lyrics file is attached."

@@ -15,6 +15,7 @@ on:
       - "package.json"
       - "package-lock.json"
       - "admin/**"
+      - ".pages.yml"
       - "ADMIN.md"
       - ".github/workflows/sync-catalog.yml"
   workflow_dispatch:
