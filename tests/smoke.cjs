@@ -30,7 +30,11 @@ async function main() {
   const browser = await puppeteer.launch({
     executablePath: fs.existsSync(EDGE) ? EDGE : undefined,
     headless: "new",
-    args: ["--autoplay-policy=no-user-gesture-required", "--mute-audio"],
+    args: [
+      "--autoplay-policy=no-user-gesture-required",
+      "--mute-audio",
+      ...(process.env.CI ? ["--no-sandbox", "--disable-setuid-sandbox"] : []),
+    ],
   });
 
   const page = await browser.newPage();
