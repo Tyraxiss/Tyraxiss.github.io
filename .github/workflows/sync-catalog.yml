@@ -48,15 +48,16 @@ jobs:
           sudo apt-get install --no-install-recommends --yes ffmpeg
           ffprobe -version
 
-      - name: Run pipeline tests
-        run: |
-          python tests/test_catalog.py
-          python tests/test_validate.py
+      - name: Run validator tests
+        run: python tests/test_validate.py
 
       - name: Rebuild catalog.json from album data and the audio on disk
         # build_catalog.py adds new audio, re-stamps durations from ffprobe and
         # never touches lyrics. It exits non-zero if it had to drop anything.
         run: python scripts/build_catalog.py
+
+      - name: Run catalog tests against the rebuilt catalog
+        run: python tests/test_catalog.py
 
       - name: Validate the rebuilt catalog against the audio on disk
         run: python scripts/validate_catalog.py
